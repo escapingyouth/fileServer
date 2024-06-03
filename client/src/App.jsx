@@ -1,21 +1,14 @@
 import { Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import AdminDashboard from './components/AdminDashboard';
 
 function App() {
 	return (
 		<Routes>
-			<Route
-				path='/'
-				element={
-					<Layout>
-						<h1>Hello world</h1>
-					</Layout>
-				}
-			/>
-			<Route path='/login' element={<Login />} />
-			<Route path='/signup' element={<Signup />} />
+			<Route path='login' element={<Login />} />
+			<Route path='signup' element={<Signup />} />
+			<Route path='admin/dashboard' element={<AdminDashboard />} />
 		</Routes>
 	);
 }

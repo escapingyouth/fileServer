@@ -25,7 +25,9 @@ export default function AuthLayout({
 						display: {
 							xs: 'none',
 							lg: 'flex'
-						}
+						},
+
+						textAlign: 'center'
 					}}
 				>
 					<Typography
@@ -33,6 +35,12 @@ export default function AuthLayout({
 						variant='h3'
 						component='h1'
 						marginBottom='0.4rem'
+						sx={{
+							fontSize: {
+								lg: '2.2rem',
+								xl: '3rem'
+							}
+						}}
 					>
 						{bgHeading}
 					</Typography>
@@ -56,9 +64,9 @@ export default function AuthLayout({
 							width: {
 								xs: '90%',
 								sm: '75%',
-								md: '65%',
+								md: '55%',
 								lg: '85%',
-								xl: '65%'
+								xl: '55%'
 							}
 						}}
 					>

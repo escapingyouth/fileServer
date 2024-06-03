@@ -23,12 +23,24 @@ export default function Signup() {
 	return (
 		<AuthLayout
 			bgImage='signup.jpg'
-			bgHeading='Hello, Friend!👋'
+			bgHeading='Hello, File Explorer! 🗂️'
 			bgSubHeading='Enter your personal details to start your journey'
 			formHeading='Sign Up'
 			formSubHeading='Create an account to get started.'
 		>
 			<form action='' noValidate>
+				<TextField
+					label='Name'
+					id='name'
+					variant='outlined'
+					color='primary'
+					type='text'
+					fullWidth
+					required
+					sx={{
+						marginBottom: '1rem'
+					}}
+				/>
 				<TextField
 					label='Email'
 					id='email'

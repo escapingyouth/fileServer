@@ -24,8 +24,8 @@ export default function Login() {
 	return (
 		<AuthLayout
 			bgImage='login.jpg'
-			bgHeading='Welcome Back!🎉'
-			bgSubHeading='Enter your personal details to continue your journey'
+			bgHeading='Welcome Back!✨'
+			bgSubHeading='Enter your details to access your files 📁'
 			formHeading='Log In'
 			formSubHeading='Welcome back! Sign in to your account.'
 		>
