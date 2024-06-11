@@ -1,7 +1,9 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+
 import {
 	Box,
 	List,
@@ -11,160 +13,151 @@ import {
 	ListItemText,
 	CssBaseline,
 	Divider,
-	IconButton
+	Drawer
 } from '@mui/material';
-
-import MuiDrawer from '@mui/material/Drawer';
-
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import Logo from './Logo';
 import TopMenu from './TopMenu';
 
+import { adminMenuItems, userMenuItems } from './MenuItems';
+
 const drawerWidth = 240;
 
-const openedMixin = (theme) => ({
-	width: drawerWidth,
-	transition: theme.transitions.create('width', {
-		easing: theme.transitions.easing.sharp,
-		duration: theme.transitions.duration.enteringScreen
-	}),
-	overflowX: 'hidden'
-});
-
-const closedMixin = (theme) => ({
-	transition: theme.transitions.create('width', {
-		easing: theme.transitions.easing.sharp,
-		duration: theme.transitions.duration.leavingScreen
-	}),
-	overflowX: 'hidden',
-	width: `calc(${theme.spacing(7)} + 1px)`,
-	[theme.breakpoints.up('sm')]: {
-		width: `calc(${theme.spacing(8)} + 1px)`
-	}
-});
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'flex-end',
-	padding: theme.spacing(0, 1),
-	...theme.mixins.toolbar
-}));
-
-const Drawer = styled(MuiDrawer, {
-	shouldForwardProp: (prop) => prop !== 'open'
-})(({ theme, open }) => ({
-	width: drawerWidth,
-	flexShrink: 0,
-	whiteSpace: 'nowrap',
-	boxSizing: 'border-box',
-	...(open && {
-		...openedMixin(theme),
-		'& .MuiDrawer-paper': openedMixin(theme)
-	}),
-	...(!open && {
-		...closedMixin(theme),
-		'& .MuiDrawer-paper': closedMixin(theme)
-	})
-}));
-
-export default function NavigationMenu({ menuItems }) {
+function DrawerItems({ isAdmin }) {
+	const menuItemsToRender = isAdmin ? adminMenuItems : userMenuItems;
+	const navigate = useNavigate();
+	const location = useLocation();
 	const theme = useTheme();
-	const [open, setOpen] = useState(false);
 
-	const handleDrawerOpen = () => {
-		setOpen(true);
-	};
+	return (
+		<div>
+			<Box
+				sx={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'flex-start',
+					...theme.mixins.toolbar
+				}}
+			>
+				<Logo />
+			</Box>
+
+			<Divider />
+			<List>
+				{menuItemsToRender?.map((item) => (
+					<ListItem
+						key={item.text}
+						disablePadding
+						sx={{
+							display: 'block',
+							color: '#fff',
+							'&:hover': {
+								backgroundColor: '#393A3B'
+							},
+							...(location.pathname === item.path && {
+								'&:active': {
+									backgroundColor: '#393A3B'
+								}
+							})
+						}}
+						onClick={() => navigate(item.path)}
+					>
+						<ListItemButton
+							sx={{
+								minHeight: 48,
+								justifyContent: open ? 'initial' : 'center',
+								px: 2.5
+							}}
+						>
+							<ListItemIcon
+								sx={{
+									minWidth: 0,
+									mr: 3,
+									justifyContent: 'center',
+									color: '#fff'
+								}}
+							>
+								{item.icon}
+							</ListItemIcon>
+							<ListItemText primary={item.text} />
+						</ListItemButton>
+					</ListItem>
+				))}
+			</List>
+		</div>
+	);
+}
+
+DrawerItems.propTypes = {
+	isAdmin: PropTypes.bool
+};
+
+export default function NavigationMenu({ isAdmin }) {
+	const theme = useTheme();
+
+	const [mobileOpen, setMobileOpen] = useState(false);
+	const [isClosing, setIsClosing] = useState(false);
 
 	const handleDrawerClose = () => {
-		setOpen(false);
+		setIsClosing(true);
+		setMobileOpen(false);
+	};
+
+	const handleDrawerTransitionEnd = () => {
+		setIsClosing(false);
+	};
+
+	const handleDrawerToggle = () => {
+		if (!isClosing) {
+			setMobileOpen(!mobileOpen);
+		}
 	};
 
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<>
 			<CssBaseline />
-			<TopMenu open={open} onHandleDrawerOpen={handleDrawerOpen} />
-
-			<Drawer
-				variant='permanent'
-				open={open}
-				sx={{
-					'& .MuiDrawer-paper': {
-						backgroundColor: theme.palette.secondary.main
-					}
-				}}
+			<TopMenu onHandleDrawerToggle={handleDrawerToggle} />
+			<Box
+				component='nav'
+				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+				aria-label='mailbox folders'
 			>
-				<DrawerHeader>
-					<Logo />
-
-					<IconButton onClick={handleDrawerClose}>
-						{theme.direction === 'rtl' ? (
-							<ChevronRightIcon
-								sx={{
-									color: '#fff'
-								}}
-							/>
-						) : (
-							<ChevronLeftIcon
-								sx={{
-									color: '#fff'
-								}}
-							/>
-						)}
-					</IconButton>
-				</DrawerHeader>
-				<Divider />
-				<List>
-					{menuItems?.map((item) => (
-						<ListItem
-							key={item.text}
-							disablePadding
-							sx={{
-								display: 'block',
-								color: '#fff',
-								'&:hover': {
-									backgroundColor: '#1E2736'
-								},
-								'&:active': {
-									backgroundColor: '#1E2736'
-								}
-							}}
-						>
-							<ListItemButton
-								sx={{
-									minHeight: 48,
-									justifyContent: open ? 'initial' : 'center',
-									px: 2.5
-								}}
-							>
-								<ListItemIcon
-									sx={{
-										minWidth: 0,
-										mr: open ? 3 : 'auto',
-										justifyContent: 'center',
-										color: '#fff'
-									}}
-								>
-									{item.icon}
-								</ListItemIcon>
-								<ListItemText
-									primary={item.text}
-									sx={{ opacity: open ? 1 : 0 }}
-								/>
-							</ListItemButton>
-						</ListItem>
-					))}
-				</List>
-			</Drawer>
-			<Box component='main' sx={{ flexGrow: 1, p: 3 }}>
-				<DrawerHeader />
+				<Drawer
+					variant='temporary'
+					open={mobileOpen}
+					onTransitionEnd={handleDrawerTransitionEnd}
+					onClose={handleDrawerClose}
+					ModalProps={{
+						keepMounted: true
+					}}
+					sx={{
+						display: { xs: 'block', sm: 'none' },
+						'& .MuiDrawer-paper': {
+							backgroundColor: theme.palette.secondary.main
+						}
+					}}
+				>
+					<DrawerItems isAdmin={isAdmin} />
+				</Drawer>
+				<Drawer
+					variant='permanent'
+					sx={{
+						display: { xs: 'none', sm: 'block' },
+						'& .MuiDrawer-paper': {
+							boxSizing: 'border-box',
+							width: drawerWidth,
+							backgroundColor: theme.palette.secondary.main
+						}
+					}}
+					open
+				>
+					<DrawerItems isAdmin={isAdmin} />
+				</Drawer>
 			</Box>
-		</Box>
+		</>
 	);
 }
 
 NavigationMenu.propTypes = {
-	menuItems: PropTypes.array
+	isAdmin: PropTypes.bool
 };

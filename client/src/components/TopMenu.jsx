@@ -78,7 +78,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	}
 }));
 
-export default function TopMenu({ open, onHandleDrawerOpen }) {
+export default function TopMenu({ onHandleDrawerToggle }) {
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
@@ -114,43 +114,34 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 			open={isMobileMenuOpen}
 			onClose={handleMobileMenuClose}
 			sx={{
-				mt: '45px',
 				'& .MuiList-root': {
-					// display: 'flex',
-					// justifyContent: 'center',
-					// flexDirection: 'column'
-					padding: '1rem'
-				}
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'start',
+					backgroundColor: 'secondary.main'
+				},
+
+				mt: '45px'
 			}}
 		>
-			<MenuItem onClick={handleUserMenuOpen}>
+			<MenuItem
+				onClick={handleUserMenuOpen}
+				sx={{
+					width: '100%',
+					alignContent: 'center',
+					display: 'flex',
+					gap: 1
+				}}
+			>
 				<IconButton
-					size='large'
 					color='inherit'
 					sx={{
-						padding: '1rem'
+						padding: '0rem'
 					}}
 				>
-					<SettingsIcon />
-				</IconButton>
-				<Typography
-					variant='body2'
-					component='p'
-					sx={{
-						color: '#101727'
-					}}
-				>
-					Settings
-				</Typography>
-			</MenuItem>
-			<MenuItem>
-				<IconButton size='large' color='inherit'>
-					<Avatar
-						alt='User'
-						src='/images/avatar.webp'
+					<SettingsIcon
 						sx={{
-							width: 30,
-							height: 30
+							color: '#fff'
 						}}
 					/>
 				</IconButton>
@@ -158,7 +149,36 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 					variant='body2'
 					component='p'
 					sx={{
-						color: '#101727'
+						color: '#fff',
+						fontSize: '0.9rem'
+					}}
+				>
+					Settings
+				</Typography>
+			</MenuItem>
+			<MenuItem
+				sx={{
+					width: '100%',
+					alignContent: 'center',
+					display: 'flex',
+					gap: 1
+				}}
+			>
+				<Avatar
+					alt='User'
+					src='/images/avatar.jpg'
+					sx={{
+						width: 24,
+						height: 24
+					}}
+				/>
+
+				<Typography
+					variant='body2'
+					component='p'
+					sx={{
+						color: '#fff',
+						fontSize: '0.9rem'
 					}}
 				>
 					Michael
@@ -169,14 +189,21 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
-			<AppBar position='fixed' open={open} color='secondary'>
+			<AppBar
+				position='fixed'
+				color='secondary'
+				sx={{
+					width: { sm: `calc(100% - ${drawerWidth}px)` },
+					ml: { sm: `${drawerWidth}px` }
+				}}
+			>
 				<Toolbar>
 					<IconButton
 						color='inherit'
 						aria-label='open drawer'
-						onClick={onHandleDrawerOpen}
 						edge='start'
-						sx={{ marginRight: 5, ...(open && { display: 'none' }) }}
+						onClick={onHandleDrawerToggle}
+						sx={{ mr: 2, display: { sm: 'none' } }}
 					>
 						<MenuIcon />
 					</IconButton>
@@ -206,7 +233,7 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 						<Avatar
 							alt='User'
-							src='/images/avatar.webp'
+							src='/images/avatar.jpg'
 							sx={{ marginLeft: 2, width: 24, height: 24 }}
 						/>
 					</Box>
@@ -226,7 +253,12 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 			</AppBar>
 			{renderMobileMenu}
 			<Menu
-				sx={{ mt: '45px' }}
+				sx={{
+					mt: '45px',
+					'& .MuiList-root': {
+						backgroundColor: 'secondary.main'
+					}
+				}}
 				id='menu-appbar'
 				anchorEl={anchorElUser}
 				anchorOrigin={{
@@ -243,7 +275,15 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 			>
 				{settings.map((setting) => (
 					<MenuItem key={setting} onClick={handleUserMenuClose}>
-						<Typography textAlign='center'>{setting}</Typography>
+						<Typography
+							textAlign='center'
+							sx={{
+								color: '#fff',
+								fontSize: '0.9rem'
+							}}
+						>
+							{setting}
+						</Typography>
 					</MenuItem>
 				))}
 			</Menu>
@@ -252,6 +292,5 @@ export default function TopMenu({ open, onHandleDrawerOpen }) {
 }
 
 TopMenu.propTypes = {
-	open: PropTypes.bool,
-	onHandleDrawerOpen: PropTypes.func
+	onHandleDrawerToggle: PropTypes.func
 };

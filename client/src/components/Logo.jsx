@@ -13,7 +13,7 @@ export default function Logo() {
 					objectFit: 'contain'
 				},
 				width: '100%',
-				paddingLeft: 1.6,
+				pl: 2.7,
 				gap: '1.5rem',
 				color: '#fff'
 			}}

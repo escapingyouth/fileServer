@@ -75,7 +75,12 @@ export default function AuthLayout({
 								marginBottom: '4rem'
 							}}
 						>
-							<Typography variant='h4' component='h1' fontWeight='600'>
+							<Typography
+								variant='h4'
+								component='h1'
+								fontWeight='600'
+								color='primary'
+							>
 								{formHeading}
 							</Typography>
 							<Typography variant='body1' component='span' color='#5C677D'>
