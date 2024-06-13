@@ -52,15 +52,17 @@ function DrawerItems({ isAdmin }) {
 							display: 'block',
 							color: '#fff',
 							'&:hover': {
-								backgroundColor: '#393A3B'
+								backgroundColor: '#636464'
 							},
 							...(location.pathname === item.path && {
-								'&:active': {
+								'&': {
 									backgroundColor: '#393A3B'
 								}
 							})
 						}}
-						onClick={() => navigate(item.path)}
+						onClick={() => {
+							navigate(item.path);
+						}}
 					>
 						<ListItemButton
 							sx={{

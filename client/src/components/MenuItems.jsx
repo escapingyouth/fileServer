@@ -7,20 +7,16 @@ import EmailIcon from '@mui/icons-material/Email';
 import GradeIcon from '@mui/icons-material/Grade';
 import HelpIcon from '@mui/icons-material/Help';
 
-const commonMenuItems = [
-	{
-		text: 'All Files',
-		icon: <DescriptionIcon color='#fff' />,
-		path: '/files'
-	}
-];
-
 export const adminMenuItems = [
-	...commonMenuItems,
 	{
 		text: 'Dashboard',
 		icon: <DashboardIcon color='#fff' />,
 		path: '/admin/dashboard'
+	},
+	{
+		text: 'All Files',
+		icon: <DescriptionIcon color='#fff' />,
+		path: '/admin/files'
 	},
 	{
 		text: 'Statistics',
@@ -45,7 +41,11 @@ export const userMenuItems = [
 		icon: <DashboardIcon color='#fff' />,
 		path: '/user/dashboard'
 	},
-	...commonMenuItems,
+	{
+		text: 'All Files',
+		icon: <DescriptionIcon color='#fff' />,
+		path: '/user/files'
+	},
 
 	{
 		text: 'Email File',

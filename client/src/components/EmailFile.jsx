@@ -1,7 +1,7 @@
 import { Typography, TextField, Button } from '@mui/material';
 import PageLayout from './layouts/PageLayout';
 import SelectFile from './SelectFile';
-import UploadFile from './UploadFile';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function EmailFile() {
 	return (
@@ -18,7 +18,8 @@ export default function EmailFile() {
 				</Typography>
 				<TextField
 					label='To'
-					id='receipient'
+					id='recipient'
+					name='recipient'
 					variant='outlined'
 					color='primary'
 					type='email'
@@ -32,6 +33,7 @@ export default function EmailFile() {
 				<TextField
 					label='Subject'
 					id='subject'
+					name='subject'
 					variant='outlined'
 					color='primary'
 					type='text'
@@ -45,6 +47,7 @@ export default function EmailFile() {
 				<TextField
 					label='Message'
 					id='message'
+					name='message'
 					variant='outlined'
 					color='primary'
 					type='text'
@@ -72,12 +75,13 @@ export default function EmailFile() {
 					OR
 				</Typography>
 
-				<UploadFile />
+				{/* <FileUploadInput placeholder='Upload File(s)' /> */}
 
 				<Button
 					type='submit'
 					color='secondary'
 					variant='contained'
+					endIcon={<SendIcon />}
 					sx={{
 						paddingY: '0.8rem ',
 						'&:hover': {
