@@ -1,88 +1,71 @@
 const File = require('../models/fileModel');
+const AppError = require('../utils/appError');
+const catchAsync = require('../utils/catchAsync');
 
-exports.getAllFiles = async (req, res, next) => {
-  try {
-    const files = await File.find();
+exports.getAllFiles = catchAsync(async (req, res, next) => {
+  const files = await File.find();
 
-    res.status(200).json({
-      status: 'success',
-      results: files.length,
-      data: {
-        files,
-      },
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: 'fail',
-      message: error,
-    });
-  }
-};
+  res.status(200).json({
+    status: 'success',
+    results: files.length,
+    data: {
+      files,
+    },
+  });
+});
 
-exports.getFile = async (req, res, next) => {
-  try {
-    const file = await File.findById(req.params.id);
-    res.status(200).json({
-      status: 'success',
-      data: {
-        file,
-      },
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: 'fail',
-      message: error,
-    });
-  }
-};
+exports.getFile = catchAsync(async (req, res, next) => {
+  const file = await File.findById(req.params.id);
 
-exports.createFile = async (req, res, next) => {
-  try {
-    const newFile = await File.create(req.body);
+  if (!file) return next(new AppError('No file found with that ID', 404));
 
-    res.status(201).json({
-      status: 'success',
-      data: { file: newFile },
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: 'fail',
-      message: error,
-    });
-  }
-};
+  res.status(200).json({
+    status: 'success',
+    data: {
+      file,
+    },
+  });
+});
 
-exports.updateFile = async (req, res, next) => {
-  try {
-    const file = await File.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+exports.uploadFile = catchAsync(async (req, res, next) => {
+  const { fieldname, originalname, size, mimetype } = req.file;
+  console.log(req.file);
 
-    res.status(200).json({
-      status: 'success',
-      data: { file },
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: 'fail',
-      message: error,
-    });
-  }
-};
+  const newFile = await File.create({
+    ...req.body,
+    fieldname,
+    originalname,
+    size,
+    mimetype,
+  });
 
-exports.deleteFile = async (req, res, next) => {
-  try {
-    await File.findByIdAndDelete(req.params.id);
+  res.status(201).json({
+    status: 'success',
+    data: { file: newFile },
+  });
+});
 
-    res.status(204).json({
-      staus: 'success',
-      data: null,
-    });
-  } catch (error) {
-    res.status(404).json({
-      status: 'fail',
-      message: error,
-    });
-  }
-};
+exports.updateFile = catchAsync(async (req, res, next) => {
+  const file = await File.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!file) return next(new AppError('No file found with that ID', 404));
+
+  res.status(200).json({
+    status: 'success',
+    data: { file },
+  });
+});
+
+exports.deleteFile = catchAsync(async (req, res, next) => {
+  const file = await File.findByIdAndDelete(req.params.id);
+
+  if (!file) return next(new AppError('No file found with that ID', 404));
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
