@@ -1,6 +1,7 @@
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const sendEmail = require('../utils/email');
 
 exports.getAllFiles = catchAsync(async (req, res, next) => {
   const files = await File.find();
@@ -28,8 +29,9 @@ exports.getFile = catchAsync(async (req, res, next) => {
 });
 
 exports.uploadFile = catchAsync(async (req, res, next) => {
+  if (!req.file) return next(new AppError('No file uploaded', 400));
+
   const { fieldname, originalname, size, mimetype } = req.file;
-  console.log(req.file);
 
   const newFile = await File.create({
     ...req.body,
@@ -43,6 +45,35 @@ exports.uploadFile = catchAsync(async (req, res, next) => {
     status: 'success',
     data: { file: newFile },
   });
+});
+
+exports.emailFile = catchAsync(async (req, res, next) => {
+  const { sender, recipient, subject, message } = req.body;
+  const { file } = req;
+  if (!file) return next(new AppError('No file uploaded for email', 400));
+  console.log(req.body);
+  console.log(file);
+
+  try {
+    await sendEmail({
+      sender,
+      recipient,
+      subject,
+      message,
+      file,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Email sent successfully',
+    });
+  } catch (error) {
+    console.log(error);
+    return next(
+      new AppError('There was an error sending the email.Try again later!'),
+      500,
+    );
+  }
 });
 
 exports.updateFile = catchAsync(async (req, res, next) => {
