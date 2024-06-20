@@ -9,7 +9,7 @@ import UploadFile from './components/UploadFile';
 function App() {
 	return (
 		<Routes>
-			<Route path='/login' element={<Login />} />
+			<Route index path='/login' element={<Login />} />
 			<Route path='/signup' element={<Signup />} />
 			<Route path='/admin/*'>
 				<Route path='dashboard' element={<AdminDashboard />} />

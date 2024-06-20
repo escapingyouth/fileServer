@@ -1,37 +1,95 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button } from '@mui/material';
+import {
+	Typography,
+	TextField,
+	Button,
+	CircularProgress,
+	Snackbar,
+	Alert
+} from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PageLayout from './layouts/PageLayout';
 
 export default function UploadFile() {
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [selectedFile, setSelectedFile] = useState(null);
+	const [loading, setIsLoading] = useState(false);
+
+	const [formState, setFormState] = useState({
+		title: '',
+		description: '',
+		uploadedFile: null
+	});
+
+	const [submitted, setSubmitted] = useState(false);
+
+	const [snackbar, setSnackbar] = useState({
+		open: false,
+		message: '',
+		severity: 'success'
+	});
+
+	const handleClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setSnackbar({ ...snackbar, open: false });
+	};
+
+	const handleChange = (e) => {
+		const { name, value, files } = e.target;
+
+		if (name === 'file') {
+			setFormState({
+				...formState,
+				uploadedFile: files[0]
+			});
+		} else {
+			setFormState({
+				...formState,
+				[name]: value
+			});
+		}
+	};
 
 	const handleUpload = async (e) => {
 		e.preventDefault();
+		setSubmitted(true);
 
-		if (!selectedFile) {
-			alert('Please select a file to upload');
+		if (!formState.title || !formState.description) {
+			setSnackbar({
+				open: true,
+				message: 'Please fill out all required fields.',
+				severity: 'error'
+			});
 			return;
 		}
 
 		const formData = new FormData();
-		formData.append('file', selectedFile);
-		formData.append('title', title);
-		formData.append('description', description);
+
+		formData.append('title', formState.title);
+		formData.append('description', formState.description);
+		formData.append('file', formState.uploadedFile);
 
 		try {
+			setIsLoading(true);
+
 			await axios.post('http://localhost:8000/api/files/upload', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}
 			});
-			alert('File uploaded successfully');
+
+			setSnackbar({
+				open: true,
+				message: 'File uploaded sent successfully!',
+				severity: 'success'
+			});
+
+			setSubmitted(false);
 		} catch (error) {
-			console.error('Error uploading file:', error);
-			alert('Error uploading file');
+			setSnackbar({ open: true, message: error.message, severity: 'error' });
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -45,7 +103,6 @@ export default function UploadFile() {
 					label='Title'
 					id='title'
 					name='title'
-					value={title}
 					variant='outlined'
 					color='primary'
 					type='text'
@@ -53,14 +110,15 @@ export default function UploadFile() {
 					placeholder='Enter file title'
 					required
 					sx={{ mb: '1rem' }}
-					onChange={(e) => setTitle(e.target.value)}
+					value={formState.title}
+					onChange={handleChange}
+					error={submitted && !formState.title}
 				/>
 
 				<TextField
 					label='Description'
 					id='description'
 					name='description'
-					value={description}
 					variant='outlined'
 					color='primary'
 					type='text'
@@ -70,14 +128,16 @@ export default function UploadFile() {
 					fullWidth
 					required
 					sx={{ mb: '1rem' }}
-					onChange={(e) => setDescription(e.target.value)}
+					value={formState.description}
+					onChange={handleChange}
+					error={submitted && !formState.description}
 				/>
 
 				<TextField
 					type='file'
 					name='file'
 					fullWidth
-					onChange={(e) => setSelectedFile(e.target.files[0])}
+					onChange={handleChange}
 					sx={{ mb: '2rem' }}
 				/>
 
@@ -85,7 +145,8 @@ export default function UploadFile() {
 					type='submit'
 					color='secondary'
 					variant='contained'
-					endIcon={<FileUploadIcon />}
+					endIcon={loading ? '' : <FileUploadIcon />}
+					disabled={loading}
 					sx={{
 						paddingY: '0.8rem ',
 						'&:hover': {
@@ -98,9 +159,27 @@ export default function UploadFile() {
 						}
 					}}
 				>
-					Upload
+					{loading ? (
+						<CircularProgress size={25} sx={{ color: '#fff' }} disableShrink />
+					) : (
+						'Upload'
+					)}
 				</Button>
 			</form>
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={5000}
+				onClose={handleClose}
+			>
+				<Alert
+					onClose={handleClose}
+					severity={snackbar.severity}
+					variant='filled'
+					sx={{ width: '100%' }}
+				>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
 		</PageLayout>
 	);
 }
