@@ -14,7 +14,6 @@ import SendIcon from '@mui/icons-material/Send';
 export default function EmailFile() {
 	const [loading, setIsLoading] = useState(false);
 	const [formState, setFormState] = useState({
-		sender: '',
 		recipient: '',
 		subject: '',
 		message: '',
@@ -71,7 +70,6 @@ export default function EmailFile() {
 
 		const formData = new FormData();
 
-		formData.append('sender', formState.sender);
 		formData.append('recipient', formState.recipient);
 		formData.append('subject', formState.subject);
 		formData.append('message', formState.message);
@@ -110,21 +108,7 @@ export default function EmailFile() {
 				<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 					Email File
 				</Typography>
-				<TextField
-					label='From'
-					id='sender'
-					name='sender'
-					variant='outlined'
-					color='primary'
-					type='text'
-					fullWidth
-					placeholder='Enter your name'
-					required
-					value={formState.sender}
-					onChange={handleChange}
-					sx={{ mb: '1rem' }}
-					error={submitted && !formState.sender}
-				/>
+
 				<TextField
 					label='To'
 					id='recipient'
