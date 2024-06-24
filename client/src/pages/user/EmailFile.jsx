@@ -1,38 +1,21 @@
 import { useState } from 'react';
 import axios from 'axios';
-import {
-	Typography,
-	TextField,
-	Button,
-	CircularProgress,
-	Snackbar,
-	Alert
-} from '@mui/material';
-import PageLayout from './layouts/PageLayout';
+import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import PageLayout from '../../components/layouts/PageLayout';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 
 export default function EmailFile() {
 	const [loading, setIsLoading] = useState(false);
+	const [submitted, setSubmitted] = useState(false);
+	const { showSnackbar } = useSnackbar();
+
 	const [formState, setFormState] = useState({
 		recipient: '',
 		subject: '',
 		message: '',
 		uploadedFile: null
 	});
-	const [submitted, setSubmitted] = useState(false);
-
-	const [snackbar, setSnackbar] = useState({
-		open: false,
-		message: '',
-		severity: 'success'
-	});
-
-	const handleClose = (event, reason) => {
-		if (reason === 'clickaway') {
-			return;
-		}
-		setSnackbar({ ...snackbar, open: false });
-	};
 
 	const handleChange = (e) => {
 		const { name, value, files } = e.target;
@@ -55,16 +38,12 @@ export default function EmailFile() {
 		setSubmitted(true);
 
 		if (
-			!formState.sender ||
 			!formState.recipient ||
 			!formState.subject ||
-			!formState.message
+			!formState.message ||
+			!formState.uploadedFile
 		) {
-			setSnackbar({
-				open: true,
-				message: 'Please fill out all required fields.',
-				severity: 'error'
-			});
+			showSnackbar('Please fill out all required fields.', 'error');
 			return;
 		}
 
@@ -84,14 +63,10 @@ export default function EmailFile() {
 				}
 			});
 
-			setSnackbar({
-				open: true,
-				message: 'Email sent successfully!',
-				severity: 'success'
-			});
+			showSnackbar('Email sent successfully!');
 			setSubmitted(false);
 		} catch (error) {
-			setSnackbar({ open: true, message: error.message, severity: 'error' });
+			showSnackbar(error.message, 'error');
 		} finally {
 			setIsLoading(false);
 		}
@@ -162,6 +137,7 @@ export default function EmailFile() {
 					fullWidth
 					sx={{ mb: '2rem' }}
 					onChange={handleChange}
+					error={submitted && !formState.uploadedFile}
 				/>
 				<Button
 					type='submit'
@@ -188,20 +164,6 @@ export default function EmailFile() {
 					)}
 				</Button>
 			</form>
-			<Snackbar
-				open={snackbar.open}
-				autoHideDuration={5000}
-				onClose={handleClose}
-			>
-				<Alert
-					onClose={handleClose}
-					severity={snackbar.severity}
-					variant='filled'
-					sx={{ width: '100%' }}
-				>
-					{snackbar.message}
-				</Alert>
-			</Snackbar>
 		</PageLayout>
 	);
 }

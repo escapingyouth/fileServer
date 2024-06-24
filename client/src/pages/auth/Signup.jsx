@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import AuthLayout from '../components/layouts/AuthLayout';
+import AuthLayout from '../../components/layouts/AuthLayout';
 import {
 	Typography,
 	TextField,

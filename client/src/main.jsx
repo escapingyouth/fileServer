@@ -4,13 +4,16 @@ import App from './App.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from '@emotion/react';
 import theme from './utils/theme.js';
+import { SnackbarProvider } from './contexts/SnackbarContext.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>
 			<BrowserRouter>
-				<App />
+				<SnackbarProvider>
+					<App />
+				</SnackbarProvider>
 			</BrowserRouter>
 		</ThemeProvider>
 	</React.StrictMode>

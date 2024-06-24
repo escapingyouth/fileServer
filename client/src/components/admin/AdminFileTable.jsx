@@ -5,14 +5,16 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import ActionMenu from './ActionMenu';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 
-// Define the columns for the DataGrid
-const columns = [
+const columns = (handleDeleteFile) => [
 	{
 		field: 'filename',
 		headerName: 'File name',
 		width: 250
 	},
+
 	{
 		field: 'size',
 		headerName: 'Size',
@@ -31,7 +33,19 @@ const columns = [
 		width: 100,
 		renderCell: (params) => params.value
 	},
-	{ field: 'action', headerName: 'Action', width: 150 }
+	{
+		field: 'description',
+		headerName: 'Description',
+		width: 250
+	},
+	{
+		field: 'action',
+		headerName: 'Action',
+		width: 150,
+		renderCell: (params) => (
+			<ActionMenu fileId={params.row.id} onDelete={handleDeleteFile} />
+		)
+	}
 ];
 
 const formatFileSize = (sizeInBytes) => {
@@ -52,6 +66,7 @@ const formatDate = (dateString) => {
 
 const getFileIcon = (mimetype) => {
 	const extension = mimetype.split('/').pop().toLowerCase();
+
 	switch (extension) {
 		case 'pdf':
 			return <PictureAsPdfIcon color='warning' />;
@@ -69,9 +84,10 @@ const getFileIcon = (mimetype) => {
 	}
 };
 
-export default function FileTable() {
+export default function AdminFileTable() {
 	const [files, setFiles] = useState([]);
 	const [loading, setIsLoading] = useState(false);
+	const { showSnackbar } = useSnackbar();
 
 	useEffect(() => {
 		async function fetchFiles() {
@@ -87,11 +103,13 @@ export default function FileTable() {
 						filename: file.title,
 						size: file.size,
 						dateModified: formatDate(file.uploadedAt),
-						fileType: getFileIcon(file.mimetype)
+						fileType: getFileIcon(file.mimetype),
+						description: file.description
 					}))
 				);
 			} catch (error) {
 				console.log(error);
+				showSnackbar(`${error.message}. Try refreshing the page`, 'error');
 			} finally {
 				setIsLoading(false);
 			}
@@ -99,48 +117,63 @@ export default function FileTable() {
 		fetchFiles();
 	}, []);
 
-	return (
-		<div style={{ height: 400, width: '100%' }}>
-			<DataGrid
-				rows={files}
-				columns={columns}
-				initialState={{
-					pagination: {
-						paginationModel: { page: 0, pageSize: 5 }
-					}
-				}}
-				pageSizeOptions={[5, 10]}
-				disableColumnResize={true}
-				disableRowSelectionOnClick={true}
-				disableColumnSelector={true}
-				disableColumnMenu={true}
-				loading={loading}
-				sx={{
-					'& .MuiDataGrid-columnHeader': {
-						backgroundColor: '#F9FAFC',
-						color: '#6B7280',
-						textAlign: 'center',
-						justifyContent: 'center',
-						display: 'flex',
-						alignItems: 'center'
-					},
-					'& .MuiDataGrid-cell': {
-						textAlign: 'center',
-						justifyContent: 'center',
-						display: 'flex',
-						alignItems: 'center'
-					},
-					'& .MuiDataGrid-columnHeaderDraggableContainer': {
-						width: 'max-content'
-					},
+	const handleDeleteFile = async (fileId) => {
+		try {
+			await axios.delete(`http://localhost:8000/api/files/${fileId}`);
 
-					'& .MuiDataGrid-row': {
-						'& .MuiDataGrid-cell': {
-							padding: '8px'
+			setFiles(files.filter((file) => file.id !== fileId));
+
+			showSnackbar('File deleted successfully!');
+		} catch (error) {
+			console.log(error);
+
+			showSnackbar(error.message, 'error');
+		}
+	};
+
+	return (
+		<>
+			<div style={{ height: 400, width: '100%' }}>
+				<DataGrid
+					rows={files}
+					columns={columns(handleDeleteFile)}
+					initialState={{
+						pagination: {
+							paginationModel: { page: 0, pageSize: 5 }
 						}
-					}
-				}}
-			/>
-		</div>
+					}}
+					pageSizeOptions={[5, 10]}
+					disableColumnResize={true}
+					disableRowSelectionOnClick={true}
+					disableColumnSelector={true}
+					disableColumnMenu={true}
+					loading={loading}
+					sx={{
+						'& .MuiDataGrid-columnHeader': {
+							backgroundColor: '#F9FAFC',
+							color: '#6B7280',
+							textAlign: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+							alignItems: 'center'
+						},
+						'& .MuiDataGrid-cell': {
+							textAlign: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+							alignItems: 'center'
+						},
+						'& .MuiDataGrid-columnHeaderDraggableContainer': {
+							width: 'max-content'
+						},
+						'& .MuiDataGrid-row': {
+							'& .MuiDataGrid-cell': {
+								padding: '8px'
+							}
+						}
+					}}
+				/>
+			</div>
+		</>
 	);
 }

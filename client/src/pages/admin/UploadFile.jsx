@@ -1,39 +1,20 @@
 import { useState } from 'react';
 import axios from 'axios';
-import {
-	Typography,
-	TextField,
-	Button,
-	CircularProgress,
-	Snackbar,
-	Alert
-} from '@mui/material';
+import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import PageLayout from './layouts/PageLayout';
+import PageLayout from '../../components/layouts/PageLayout';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 
 export default function UploadFile() {
 	const [loading, setIsLoading] = useState(false);
+	const [submitted, setSubmitted] = useState(false);
+	const { showSnackbar } = useSnackbar();
 
 	const [formState, setFormState] = useState({
 		title: '',
 		description: '',
 		uploadedFile: null
 	});
-
-	const [submitted, setSubmitted] = useState(false);
-
-	const [snackbar, setSnackbar] = useState({
-		open: false,
-		message: '',
-		severity: 'success'
-	});
-
-	const handleClose = (event, reason) => {
-		if (reason === 'clickaway') {
-			return;
-		}
-		setSnackbar({ ...snackbar, open: false });
-	};
 
 	const handleChange = (e) => {
 		const { name, value, files } = e.target;
@@ -55,12 +36,8 @@ export default function UploadFile() {
 		e.preventDefault();
 		setSubmitted(true);
 
-		if (!formState.title || !formState.description) {
-			setSnackbar({
-				open: true,
-				message: 'Please fill out all required fields.',
-				severity: 'error'
-			});
+		if (!formState.title || !formState.description || !formState.uploadedFile) {
+			showSnackbar('Please fill out all required fields.', 'error');
 			return;
 		}
 
@@ -79,15 +56,11 @@ export default function UploadFile() {
 				}
 			});
 
-			setSnackbar({
-				open: true,
-				message: 'File uploaded sent successfully!',
-				severity: 'success'
-			});
+			showSnackbar('File uploaded successfully!', 'success');
 
 			setSubmitted(false);
 		} catch (error) {
-			setSnackbar({ open: true, message: error.message, severity: 'error' });
+			showSnackbar(error.message, 'error');
 		} finally {
 			setIsLoading(false);
 		}
@@ -139,6 +112,7 @@ export default function UploadFile() {
 					fullWidth
 					onChange={handleChange}
 					sx={{ mb: '2rem' }}
+					error={submitted && !formState.uploadedFile}
 				/>
 
 				<Button
@@ -166,20 +140,6 @@ export default function UploadFile() {
 					)}
 				</Button>
 			</form>
-			<Snackbar
-				open={snackbar.open}
-				autoHideDuration={5000}
-				onClose={handleClose}
-			>
-				<Alert
-					onClose={handleClose}
-					severity={snackbar.severity}
-					variant='filled'
-					sx={{ width: '100%' }}
-				>
-					{snackbar.message}
-				</Alert>
-			</Snackbar>
 		</PageLayout>
 	);
 }
