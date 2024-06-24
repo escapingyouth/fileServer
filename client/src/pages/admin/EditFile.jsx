@@ -5,6 +5,8 @@ import axios from 'axios';
 import PageLayout from '../../components/layouts/PageLayout';
 import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 
+const api = import.meta.env.VITE_APP_API;
+
 export default function EditFile() {
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -14,15 +16,11 @@ export default function EditFile() {
 	const [loading, setIsLoading] = useState(false);
 
 	const [submitted, setSubmitted] = useState(false);
-	console.log(file);
-	console.log(submitted);
 
 	useEffect(() => {
 		async function fetchFile() {
 			try {
-				const response = await axios.get(
-					`http://localhost:8000/api/files/${id}`
-				);
+				const response = await axios.get(`${api}/files/${id}`);
 				setFile(response.data.data.file);
 			} catch (error) {
 				console.error(error);
@@ -48,7 +46,7 @@ export default function EditFile() {
 		try {
 			setIsLoading(true);
 
-			await axios.patch(`http://localhost:8000/api/files/${id}`, file);
+			await axios.patch(`${api}/files/${id}`, file);
 
 			showSnackbar('File edited successfully!');
 			setSubmitted(false);

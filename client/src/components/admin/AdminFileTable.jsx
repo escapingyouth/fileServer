@@ -8,6 +8,8 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ActionMenu from './ActionMenu';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
+const api = import.meta.env.VITE_APP_API;
+
 const columns = (handleDeleteFile) => [
 	{
 		field: 'filename',
@@ -94,7 +96,7 @@ export default function AdminFileTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await axios.get('http://localhost:8000/api/files');
+				const res = await axios.get(`${api}/files`);
 				const files = res.data.data.files;
 
 				setFiles(
@@ -119,7 +121,7 @@ export default function AdminFileTable() {
 
 	const handleDeleteFile = async (fileId) => {
 		try {
-			await axios.delete(`http://localhost:8000/api/files/${fileId}`);
+			await axios.delete(`${api}/files/${fileId}`);
 
 			setFiles(files.filter((file) => file.id !== fileId));
 

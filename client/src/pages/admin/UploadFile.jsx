@@ -5,6 +5,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
+const api = import.meta.env.VITE_APP_API;
+
 export default function UploadFile() {
 	const [loading, setIsLoading] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
@@ -50,7 +52,7 @@ export default function UploadFile() {
 		try {
 			setIsLoading(true);
 
-			await axios.post('http://localhost:8000/api/files/upload', formData, {
+			await axios.post(`${api}/files/upload`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}
@@ -60,6 +62,8 @@ export default function UploadFile() {
 
 			setSubmitted(false);
 		} catch (error) {
+			console.log(error);
+			// showSnackbar(error.response.data.message, 'error');
 			showSnackbar(error.message, 'error');
 		} finally {
 			setIsLoading(false);

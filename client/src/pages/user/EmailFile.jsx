@@ -5,6 +5,8 @@ import SendIcon from '@mui/icons-material/Send';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
+const api = import.meta.env.VITE_APP_API;
+
 export default function EmailFile() {
 	const [loading, setIsLoading] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
@@ -57,7 +59,7 @@ export default function EmailFile() {
 		try {
 			setIsLoading(true);
 
-			await axios.post('http://localhost:8000/api/files/email', formData, {
+			await axios.post(`${api}/files/email`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}

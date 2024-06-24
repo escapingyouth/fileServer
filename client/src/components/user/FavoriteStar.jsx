@@ -7,13 +7,15 @@ import { Tooltip } from '@mui/material';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import PropTypes from 'prop-types';
 
+const api = import.meta.env.VITE_APP_API;
+
 export default function FavoriteStar({ fileId, isFavorite, onFavoriteChange }) {
 	const { showSnackbar } = useSnackbar();
 	const [favorite, setFavorite] = useState(isFavorite);
 
 	const handleToggleFavorite = async () => {
 		try {
-			await axios.patch(`http://localhost:8000/api/files/${fileId}`, {
+			await axios.patch(`${api}/files/${fileId}`, {
 				isFavorite: !favorite
 			});
 			setFavorite(!favorite);

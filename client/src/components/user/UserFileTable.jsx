@@ -7,8 +7,11 @@ import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FavoriteStar from './FavoriteStar';
+import DownloadIcon from '@mui/icons-material/Download';
 
-const columns = (handleFavoriteChange) => [
+const api = import.meta.env.VITE_APP_API;
+
+const columns = (handleFavoriteChange, handleDownload) => [
 	{
 		field: 'filename',
 		headerName: 'File name',
@@ -46,6 +49,24 @@ const columns = (handleFavoriteChange) => [
 				fileId={params.row.id}
 				isFavorite={params.row.isFavorite}
 				onFavoriteChange={handleFavoriteChange}
+			/>
+		)
+	},
+	{
+		field: 'download',
+		headerName: 'Download',
+		width: 100,
+		renderCell: (params) => (
+			<DownloadIcon
+				color='info'
+				style={{ cursor: 'pointer' }}
+				onClick={() =>
+					handleDownload(
+						params.row.id,
+						params.row.filename,
+						params.row.mimetype
+					)
+				}
 			/>
 		)
 	}
@@ -96,7 +117,7 @@ export default function UserFileTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await axios.get('http://localhost:8000/api/files');
+				const res = await axios.get(`${api}/files`);
 				const files = res.data.data.files;
 
 				setFiles(
@@ -107,7 +128,8 @@ export default function UserFileTable() {
 						dateModified: formatDate(file.uploadedAt),
 						fileType: getFileIcon(file.mimetype),
 						description: file.description,
-						isFavorite: file.isFavorite
+						isFavorite: file.isFavorite,
+						mimetype: file.mimetype
 					}))
 				);
 			} catch (error) {
@@ -126,11 +148,30 @@ export default function UserFileTable() {
 		);
 	};
 
+	const handleDownload = async (fileId, filename) => {
+		try {
+			const res = await axios.get(`${api}/files/download/${fileId}`, {
+				responseType: 'blob'
+			});
+			console.log(res);
+			const url = window.URL.createObjectURL(new Blob([res.data]));
+			const link = document.createElement('a');
+			link.href = url;
+			link.setAttribute('download', filename);
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+		} catch (error) {
+			console.log(error);
+			showSnackbar(error.message, 'error');
+		}
+	};
+
 	return (
 		<div style={{ height: 400, width: '100%' }}>
 			<DataGrid
 				rows={files}
-				columns={columns(handleFavoriteChange)}
+				columns={columns(handleFavoriteChange, handleDownload)}
 				initialState={{
 					pagination: {
 						paginationModel: { page: 0, pageSize: 5 }

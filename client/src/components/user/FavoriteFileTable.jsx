@@ -7,6 +7,8 @@ import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
+const api = import.meta.env.VITE_APP_API;
+
 const columns = [
 	{
 		field: 'filename',
@@ -83,7 +85,7 @@ export default function FavoriteFileTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await axios.get('http://localhost:8000/api/files');
+				const res = await axios.get(`${api}/files`);
 				const files = res.data.data.files;
 
 				setFiles(
