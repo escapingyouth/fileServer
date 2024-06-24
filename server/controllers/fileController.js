@@ -48,7 +48,7 @@ exports.uploadFile = catchAsync(async (req, res, next) => {
 });
 
 exports.emailFile = catchAsync(async (req, res, next) => {
-  const { sender, recipient, subject, message } = req.body;
+  const { recipient, subject, message } = req.body;
   const { file } = req;
   if (!file) return next(new AppError('No file uploaded for email', 400));
   console.log(req.body);
@@ -56,7 +56,6 @@ exports.emailFile = catchAsync(async (req, res, next) => {
 
   try {
     await sendEmail({
-      sender,
       recipient,
       subject,
       message,

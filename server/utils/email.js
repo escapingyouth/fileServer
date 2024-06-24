@@ -11,7 +11,6 @@ const sendEmail = async (options) => {
   });
 
   const mailOptions = {
-    from: options.sender,
     to: options.recipient,
     subject: options.subject,
     text: options.message,

@@ -1,0 +1,102 @@
+[
+  {
+    "title": "Hello world",
+    "originalname": "photo_10_2024-06-10_12-46-30.jpg",
+    "description": "Enter file description",
+    "size": 324459,
+    "mimetype": "image/jpeg",
+    "uploadedAt": "2024-06-13T00:47:06.227+00:00",
+    "isFavorite": false,
+    "__v": 0
+  },
+  {
+    "title": "Summer Vacation",
+    "originalname": "photo_01_2024-06-11_14-30-20.jpg",
+    "description": "Beach photo",
+    "size": 289765,
+    "mimetype": "image/jpeg",
+    "uploadedAt": "2024-06-14T08:30:10.123+00:00",
+    "isFavorite": true,
+    "__v": 0
+  },
+  {
+    "title": "Work Meeting",
+    "originalname": "document_05_2024-06-12_09-15-45.pdf",
+    "description": "Meeting notes",
+    "size": 1023456,
+    "mimetype": "application/pdf",
+    "uploadedAt": "2024-06-15T10:45:00.987+00:00",
+    "isFavorite": false,
+    "__v": 0
+  },
+  {
+    "title": "Birthday Party",
+    "originalname": "photo_02_2024-06-13_18-20-30.jpg",
+    "description": "Birthday celebration",
+    "size": 450892,
+    "mimetype": "image/jpeg",
+    "uploadedAt": "2024-06-16T15:20:30.654+00:00",
+    "isFavorite": true,
+    "__v": 0
+  },
+  {
+    "title": "Conference",
+    "originalname": "presentation_03_2024-06-14_11-00-00.pptx",
+    "description": "Tech conference slides",
+    "size": 2048576,
+    "mimetype": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "uploadedAt": "2024-06-17T11:00:00.321+00:00",
+    "isFavorite": false,
+    "__v": 0
+  },
+  {
+    "title": "Grocery List",
+    "originalname": "document_06_2024-06-15_08-30-00.docx",
+    "description": "Weekly groceries",
+    "size": 51234,
+    "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "uploadedAt": "2024-06-18T08:30:00.000+00:00",
+    "isFavorite": false,
+    "__v": 0
+  },
+  {
+    "title": "Recipe Book",
+    "originalname": "document_07_2024-06-16_07-45-15.pdf",
+    "description": "Family recipes",
+    "size": 345678,
+    "mimetype": "application/pdf",
+    "uploadedAt": "2024-06-19T07:45:15.456+00:00",
+    "isFavorite": true,
+    "__v": 0
+  },
+  {
+    "title": "City Skyline",
+    "originalname": "photo_03_2024-06-17_19-10-10.jpg",
+    "description": "Evening skyline",
+    "size": 789123,
+    "mimetype": "image/jpeg",
+    "uploadedAt": "2024-06-20T19:10:10.789+00:00",
+    "isFavorite": false,
+    "__v": 0
+  },
+  {
+    "title": "Art Project",
+    "originalname": "document_08_2024-06-18_13-05-25.docx",
+    "description": "Art class project",
+    "size": 87654,
+    "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "uploadedAt": "2024-06-21T13:05:25.123+00:00",
+    "isFavorite": true,
+    "__v": 0
+  },
+  {
+    "title": "Nature Walk",
+    "originalname": "photo_04_2024-06-19_16-50-45.jpg",
+    "description": "Walk in the park",
+    "size": 512987,
+    "mimetype": "image/jpeg",
+    "uploadedAt": "2024-06-22T16:50:45.654+00:00",
+    "isFavorite": false,
+    "__v": 0
+  }
+]
