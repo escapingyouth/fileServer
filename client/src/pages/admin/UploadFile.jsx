@@ -52,7 +52,7 @@ export default function UploadFile() {
 		try {
 			setIsLoading(true);
 
-			await axios.post(`${api}/files/upload`, formData, {
+			await axios.post(`${api}/files`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}
@@ -63,7 +63,7 @@ export default function UploadFile() {
 			setSubmitted(false);
 		} catch (error) {
 			console.log(error);
-			// showSnackbar(error.response.data.message, 'error');
+			showSnackbar(error.response.data.message, 'error');
 			showSnackbar(error.message, 'error');
 		} finally {
 			setIsLoading(false);

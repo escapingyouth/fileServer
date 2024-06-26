@@ -8,7 +8,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const ITEM_HEIGHT = 48;
 
-export default function ActionMenu({ fileId, onDelete }) {
+export default function ActionMenu({ fileId, onMoveToTrash, onDelete }) {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate();
@@ -28,6 +28,10 @@ export default function ActionMenu({ fileId, onDelete }) {
 
 	const handleDelete = () => {
 		onDelete(fileId);
+		handleClose();
+	};
+	const handleMoveToTrash = () => {
+		onMoveToTrash(fileId);
 		handleClose();
 	};
 
@@ -55,6 +59,7 @@ export default function ActionMenu({ fileId, onDelete }) {
 				}}
 			>
 				<MenuItem onClick={handleEdit}>Edit</MenuItem>
+				<MenuItem onClick={handleMoveToTrash}>Trash</MenuItem>
 				<MenuItem onClick={handleDelete}>Delete</MenuItem>
 			</Menu>
 		</div>
@@ -63,5 +68,6 @@ export default function ActionMenu({ fileId, onDelete }) {
 
 ActionMenu.propTypes = {
 	fileId: PropTypes.string,
+	onMoveToTrash: PropTypes.func,
 	onDelete: PropTypes.func
 };
