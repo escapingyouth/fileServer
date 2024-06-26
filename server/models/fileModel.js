@@ -41,6 +41,10 @@ const fileSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isTrashed: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const File = mongoose.model('File', fileSchema);

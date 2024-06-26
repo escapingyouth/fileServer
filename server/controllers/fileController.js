@@ -100,6 +100,22 @@ exports.updateFile = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.moveToTrash = catchAsync(async (req, res, next) => {
+  const file = await File.findByIdAndUpdate(
+    req.params.id,
+    { isTrashed: true },
+    { new: true },
+  );
+  if (!file) return next(new AppError('No file found with that ID', 404));
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      file,
+    },
+  });
+});
+
 exports.deleteFile = catchAsync(async (req, res, next) => {
   const file = await File.findByIdAndDelete(req.params.id);
 

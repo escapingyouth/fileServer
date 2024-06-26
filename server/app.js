@@ -1,7 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-// const multer = require('multer');
 
 const fileRouter = require('./routes/fileRoutes');
 const AppError = require('./utils/appError');
