@@ -48,7 +48,7 @@ export default function EditFile() {
 
 			await axios.patch(`${api}/files/${id}`, file);
 
-			showSnackbar('File edited successfully!');
+			showSnackbar('File edited successfully!', 'info');
 			setSubmitted(false);
 			navigate('/admin/files');
 		} catch (error) {

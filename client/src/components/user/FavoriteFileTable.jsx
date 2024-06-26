@@ -6,6 +6,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import { Box } from '@mui/material';
 
 const api = import.meta.env.VITE_APP_API;
 
@@ -16,11 +17,9 @@ const columns = [
 		width: 250
 	},
 	{
-		field: 'size',
-		headerName: 'Size',
-		width: 150,
-		type: 'number',
-		valueFormatter: (params) => formatFileSize(params)
+		field: 'description',
+		headerName: 'Description',
+		width: 400
 	},
 	{
 		field: 'dateModified',
@@ -28,15 +27,17 @@ const columns = [
 		width: 150
 	},
 	{
+		field: 'size',
+		headerName: 'Size',
+		width: 150,
+		type: 'number',
+		valueFormatter: (params) => formatFileSize(params)
+	},
+	{
 		field: 'fileType',
 		headerName: 'File Type',
 		width: 100,
 		renderCell: (params) => params.value
-	},
-	{
-		field: 'description',
-		headerName: 'Description',
-		width: 250
 	}
 ];
 
@@ -112,7 +113,7 @@ export default function FavoriteFileTable() {
 	}, []);
 
 	return (
-		<div style={{ height: 400, width: '100%' }}>
+		<Box sx={{ height: '400px', width: '100%' }}>
 			<DataGrid
 				rows={files}
 				columns={columns}
@@ -152,6 +153,6 @@ export default function FavoriteFileTable() {
 					}
 				}}
 			/>
-		</div>
+		</Box>
 	);
 }

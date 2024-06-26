@@ -32,11 +32,6 @@ export const adminMenuItems = [
 		text: 'Bin',
 		icon: <DeleteIcon color='#fff' />,
 		path: '/admin/trash'
-	},
-	{
-		text: 'Help',
-		icon: <HelpIcon color='#fff' />,
-		path: '/admin/help'
 	}
 ];
 

@@ -8,6 +8,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FavoriteStar from './FavoriteStar';
 import DownloadIcon from '@mui/icons-material/Download';
+import { Box } from '@mui/material';
 
 const api = import.meta.env.VITE_APP_API;
 
@@ -15,14 +16,12 @@ const columns = (handleFavoriteChange, handleDownload) => [
 	{
 		field: 'filename',
 		headerName: 'File name',
-		width: 250
+		width: 150
 	},
 	{
-		field: 'size',
-		headerName: 'Size',
-		width: 150,
-		type: 'number',
-		valueFormatter: (params) => formatFileSize(params)
+		field: 'description',
+		headerName: 'Description',
+		width: 400
 	},
 	{
 		field: 'dateModified',
@@ -30,16 +29,20 @@ const columns = (handleFavoriteChange, handleDownload) => [
 		width: 150
 	},
 	{
+		field: 'size',
+		headerName: 'Size',
+		width: 100,
+		type: 'number',
+		valueFormatter: (params) => formatFileSize(params)
+	},
+
+	{
 		field: 'fileType',
 		headerName: 'File Type',
 		width: 100,
 		renderCell: (params) => params.value
 	},
-	{
-		field: 'description',
-		headerName: 'Description',
-		width: 250
-	},
+
 	{
 		field: 'favorite',
 		headerName: 'Favorite',
@@ -168,7 +171,7 @@ export default function UserFileTable() {
 	};
 
 	return (
-		<div style={{ height: 400, width: '100%' }}>
+		<Box sx={{ height: '400px', width: '100%' }}>
 			<DataGrid
 				rows={files}
 				columns={columns(handleFavoriteChange, handleDownload)}
@@ -178,6 +181,7 @@ export default function UserFileTable() {
 					}
 				}}
 				pageSizeOptions={[5, 10]}
+				autoPageSize={true}
 				disableColumnResize={true}
 				disableRowSelectionOnClick={true}
 				disableColumnSelector={true}
@@ -208,6 +212,6 @@ export default function UserFileTable() {
 					}
 				}}
 			/>
-		</div>
+		</Box>
 	);
 }

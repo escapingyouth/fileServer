@@ -121,7 +121,10 @@ export default function NavigationMenu({ isAdmin }) {
 			<TopMenu onHandleDrawerToggle={handleDrawerToggle} />
 			<Box
 				component='nav'
-				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+				sx={{
+					width: { sm: drawerWidth },
+					flexShrink: { sm: 0 }
+				}}
 				aria-label='mailbox folders'
 			>
 				<Drawer
@@ -135,7 +138,8 @@ export default function NavigationMenu({ isAdmin }) {
 					sx={{
 						display: { xs: 'block', sm: 'none' },
 						'& .MuiDrawer-paper': {
-							backgroundColor: theme.palette.secondary.main
+							backgroundColor: theme.palette.secondary.main,
+							height: '100%'
 						}
 					}}
 				>

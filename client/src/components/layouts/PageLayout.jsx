@@ -16,6 +16,7 @@ export default function PageLayout({ isAdmin, children }) {
 				sx={{
 					flexGrow: 1,
 					p: 3,
+					// height:''
 					width: { sm: `calc(100% - ${drawerWidth}px)` }
 				}}
 			>

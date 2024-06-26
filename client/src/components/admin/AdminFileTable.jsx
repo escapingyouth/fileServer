@@ -7,6 +7,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ActionMenu from './ActionMenu';
 import { useSnackbar } from '../../contexts/SnackbarContext';
+import { Box } from '@mui/material';
 
 const api = import.meta.env.VITE_APP_API;
 
@@ -16,13 +17,10 @@ const columns = (handleDeleteFile) => [
 		headerName: 'File name',
 		width: 250
 	},
-
 	{
-		field: 'size',
-		headerName: 'Size',
-		width: 150,
-		type: 'number',
-		valueFormatter: (params) => formatFileSize(params)
+		field: 'description',
+		headerName: 'Description',
+		width: 250
 	},
 	{
 		field: 'dateModified',
@@ -30,16 +28,20 @@ const columns = (handleDeleteFile) => [
 		width: 150
 	},
 	{
+		field: 'size',
+		headerName: 'Size',
+		width: 150,
+		type: 'number',
+		valueFormatter: (params) => formatFileSize(params)
+	},
+
+	{
 		field: 'fileType',
 		headerName: 'File Type',
 		width: 100,
 		renderCell: (params) => params.value
 	},
-	{
-		field: 'description',
-		headerName: 'Description',
-		width: 250
-	},
+
 	{
 		field: 'action',
 		headerName: 'Action',
@@ -135,7 +137,7 @@ export default function AdminFileTable() {
 
 	return (
 		<>
-			<div style={{ height: 400, width: '100%' }}>
+			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid
 					rows={files}
 					columns={columns(handleDeleteFile)}
@@ -175,7 +177,7 @@ export default function AdminFileTable() {
 						}
 					}}
 				/>
-			</div>
+			</Box>
 		</>
 	);
 }
