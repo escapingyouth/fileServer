@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const fileRouter = require('./routes/fileRoutes');
+const userRouter = require('./routes/userRoutes');
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -17,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/files', fileRouter);
+app.use('/api/users', fileRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl}`, 404));
