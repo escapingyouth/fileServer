@@ -28,7 +28,7 @@ export default function EditFile() {
 			}
 		}
 		fetchFile();
-	}, [id]);
+	}, [id, showSnackbar]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

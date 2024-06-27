@@ -123,7 +123,7 @@ export default function AdminFileTable() {
 			}
 		}
 		fetchFiles();
-	}, []);
+	}, [showSnackbar]);
 
 	const handleMoveToTrash = async (fileId) => {
 		try {

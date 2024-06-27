@@ -121,7 +121,7 @@ export default function TrashPage() {
 			}
 		}
 		fetchFiles();
-	}, []);
+	}, [showSnackbar]);
 
 	const handleDeleteFile = async (fileId) => {
 		try {

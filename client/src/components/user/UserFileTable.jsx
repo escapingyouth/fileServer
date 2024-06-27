@@ -63,13 +63,7 @@ const columns = (handleFavoriteChange, handleDownload) => [
 			<DownloadIcon
 				color='info'
 				style={{ cursor: 'pointer' }}
-				onClick={() =>
-					handleDownload(
-						params.row.id,
-						params.row.filename,
-						params.row.mimetype
-					)
-				}
+				onClick={() => handleDownload(params.row.id, params.row.originalname)}
 			/>
 		)
 	}
@@ -127,6 +121,7 @@ export default function UserFileTable() {
 					files.map((file) => ({
 						id: file._id,
 						filename: file.title,
+						originalname: file.originalname,
 						size: file.size,
 						dateModified: formatDate(file.uploadedAt),
 						fileType: getFileIcon(file.mimetype),
@@ -143,7 +138,7 @@ export default function UserFileTable() {
 			}
 		}
 		fetchFiles();
-	}, []);
+	}, [showSnackbar]);
 
 	const handleFavoriteChange = (fileId, isFavorite) => {
 		setFiles(
@@ -151,22 +146,25 @@ export default function UserFileTable() {
 		);
 	};
 
-	const handleDownload = async (fileId, filename) => {
+	const handleDownload = async (fileId, fileName) => {
 		try {
-			const res = await axios.get(`${api}/files/download/${fileId}`, {
+			const response = await axios.get(`${api}/files/download/${fileId}`, {
 				responseType: 'blob'
 			});
-			console.log(res);
-			const url = window.URL.createObjectURL(new Blob([res.data]));
+
+			const url = window.URL.createObjectURL(new Blob([response.data]));
+
 			const link = document.createElement('a');
 			link.href = url;
-			link.setAttribute('download', filename);
+			link.setAttribute('download', fileName);
+
 			document.body.appendChild(link);
 			link.click();
-			link.remove();
+			link.parentNode.removeChild(link);
+
+			showSnackbar('File successfully downloaded');
 		} catch (error) {
-			console.log(error);
-			showSnackbar(error.message, 'error');
+			showSnackbar('Error downloading file', 'error');
 		}
 	};
 

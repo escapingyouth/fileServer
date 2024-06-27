@@ -50,10 +50,20 @@ exports.uploadFile = catchAsync(async (req, res, next) => {
 exports.downloadFile = catchAsync(async (req, res, next) => {
   const file = await File.findById(req.params.id);
 
-  if (!file) return next(new AppError('No file found with that ID', 404));
+  console.log(file);
 
-  res.set('Content-Type', file.mimetype);
-  res.set('Content-Disposition', `attachment; filename="${file.title}"`);
+  if (!file) {
+    return next(new AppError('No file found with that ID', 404));
+  }
+
+  res.set({
+    'Content-Disposition': `attachment; filename="${file.originalname}"`,
+    'Content-Type': file.mimetype,
+  });
+
+  file.downloads += 1;
+  await file.save();
+
   res.send(file.buffer);
 });
 

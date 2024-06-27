@@ -110,7 +110,7 @@ export default function FavoriteFileTable() {
 			}
 		}
 		fetchFiles();
-	}, []);
+	}, [showSnackbar]);
 
 	return (
 		<Box sx={{ height: '400px', width: '100%' }}>
