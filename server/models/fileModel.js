@@ -15,8 +15,9 @@ const fileSchema = new mongoose.Schema({
       'A file title must be less than or equal to 100 characters',
     ],
   },
+
   originalname: String,
-  fieldname: String,
+
   description: {
     type: String,
     required: [true, 'A file must have a description'],
@@ -30,13 +31,21 @@ const fileSchema = new mongoose.Schema({
       'A file description must be less than or equal to 100 characters',
     ],
   },
+
   size: Number,
+
   mimetype: String,
-  fileData: Buffer,
+
+  buffer: Buffer,
+
   uploadedAt: {
     type: Date,
     default: Date.now(),
   },
+
+  downloads: { type: Number, default: 0 },
+  emailsSent: { type: Number, default: 0 },
+
   isFavorite: {
     type: Boolean,
     default: false,
