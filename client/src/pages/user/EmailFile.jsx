@@ -1,6 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button, CircularProgress } from '@mui/material';
+import {
+	Typography,
+	TextField,
+	Button,
+	CircularProgress,
+	Select,
+	MenuItem
+} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
@@ -11,28 +18,34 @@ export default function EmailFile() {
 	const [loading, setIsLoading] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
 	const { showSnackbar } = useSnackbar();
-
+	const [files, setFiles] = useState([]);
 	const [formState, setFormState] = useState({
 		recipient: '',
 		subject: '',
 		message: '',
-		uploadedFile: null
+		selectedFileId: ''
 	});
 
-	const handleChange = (e) => {
-		const { name, value, files } = e.target;
+	useEffect(() => {
+		const fetchFiles = async () => {
+			try {
+				const res = await axios.get(`${api}/files`);
+				const files = res.data.data.files;
+				setFiles(files);
+			} catch (error) {
+				showSnackbar('Error fetching files', 'error');
+			}
+		};
 
-		if (name === 'file') {
-			setFormState({
-				...formState,
-				uploadedFile: files[0]
-			});
-		} else {
-			setFormState({
-				...formState,
-				[name]: value
-			});
-		}
+		fetchFiles();
+	}, [showSnackbar]);
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormState({
+			...formState,
+			[name]: value
+		});
 	};
 
 	const handleSubmit = async (e) => {
@@ -43,26 +56,20 @@ export default function EmailFile() {
 			!formState.recipient ||
 			!formState.subject ||
 			!formState.message ||
-			!formState.uploadedFile
+			!formState.selectedFileId
 		) {
 			showSnackbar('Please fill out all required fields.', 'error');
 			return;
 		}
 
-		const formData = new FormData();
-
-		formData.append('recipient', formState.recipient);
-		formData.append('subject', formState.subject);
-		formData.append('message', formState.message);
-		formData.append('file', formState.uploadedFile);
-
 		try {
 			setIsLoading(true);
 
-			await axios.post(`${api}/files/email`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				}
+			await axios.post(`${api}/files/email`, {
+				recipient: formState.recipient,
+				subject: formState.subject,
+				message: formState.message,
+				fileId: formState.selectedFileId
 			});
 
 			showSnackbar('Email sent successfully!');
@@ -74,14 +81,20 @@ export default function EmailFile() {
 		}
 	};
 
+	const ITEM_HEIGHT = 48;
+	const ITEM_PADDING_TOP = 8;
+	const MenuProps = {
+		PaperProps: {
+			style: {
+				maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+				width: 250
+			}
+		}
+	};
+
 	return (
 		<PageLayout>
-			<form
-				onSubmit={handleSubmit}
-				autoComplete='off'
-				noValidate
-				encType='multipart/form-data'
-			>
+			<form onSubmit={handleSubmit} autoComplete='off' noValidate>
 				<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 					Email File
 				</Typography>
@@ -133,14 +146,26 @@ export default function EmailFile() {
 					sx={{ mb: '1rem' }}
 					error={submitted && !formState.message}
 				/>
-				<TextField
-					type='file'
-					name='file'
-					fullWidth
-					sx={{ mb: '2rem' }}
+
+				<Select
+					labelId='file-select-label'
+					id='file-select'
+					name='selectedFileId'
+					value={formState.selectedFileId}
 					onChange={handleChange}
-					error={submitted && !formState.uploadedFile}
-				/>
+					fullWidth
+					MenuProps={MenuProps}
+					sx={{ mb: '1rem' }}
+					required
+					error={submitted && !formState.selectedFileId}
+				>
+					{files.map((file) => (
+						<MenuItem key={file._id} value={file._id}>
+							{file.title}
+						</MenuItem>
+					))}
+				</Select>
+
 				<Button
 					type='submit'
 					color='secondary'

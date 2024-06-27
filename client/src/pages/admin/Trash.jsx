@@ -5,9 +5,10 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import { Box } from '@mui/material';
+import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import PageLayout from '../../components/layouts/PageLayout';
 
 const api = import.meta.env.VITE_APP_API;
 
@@ -45,7 +46,11 @@ const columns = (handleDeleteFile) => [
 		headerName: 'Delete',
 		width: 100,
 		renderCell: (params) => (
-			<DeleteForeverIcon onClick={() => handleDeleteFile(params.row.id)} />
+			<Tooltip title='Delete'>
+				<IconButton onClick={() => handleDeleteFile(params.row.id)}>
+					<DeleteForeverIcon color='error' />
+				</IconButton>
+			</Tooltip>
 		)
 	}
 ];
@@ -129,12 +134,51 @@ export default function TrashPage() {
 	};
 
 	return (
-		<Box sx={{ height: 400, width: '100%' }}>
-			<DataGrid
-				rows={files}
-				columns={columns(handleDeleteFile)}
-				loading={loading}
-			/>
-		</Box>
+		<PageLayout isAdmin={true}>
+			<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
+				All Files
+			</Typography>
+			<Box sx={{ height: 400, width: '100%' }}>
+				<DataGrid
+					rows={files}
+					columns={columns(handleDeleteFile)}
+					initialState={{
+						pagination: {
+							paginationModel: { page: 0, pageSize: 5 }
+						}
+					}}
+					pageSizeOptions={[5, 10]}
+					disableColumnResize={true}
+					disableRowSelectionOnClick={true}
+					disableColumnSelector={true}
+					disableColumnMenu={true}
+					loading={loading}
+					sx={{
+						'& .MuiDataGrid-columnHeader': {
+							backgroundColor: '#F9FAFC',
+							color: '#6B7280',
+							textAlign: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+							alignItems: 'center'
+						},
+						'& .MuiDataGrid-cell': {
+							textAlign: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+							alignItems: 'center'
+						},
+						'& .MuiDataGrid-columnHeaderDraggableContainer': {
+							width: 'max-content'
+						},
+						'& .MuiDataGrid-row': {
+							'& .MuiDataGrid-cell': {
+								padding: '8px'
+							}
+						}
+					}}
+				/>
+			</Box>
+		</PageLayout>
 	);
 }

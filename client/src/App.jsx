@@ -12,6 +12,7 @@ import UserAllFiles from './pages/user/UserAllFiles';
 import EmailFile from './pages/user/EmailFile';
 import FavoriteFiles from './pages/user/FavoriteFiles';
 import HelpPage from './pages/user/HelpPage';
+import TrashPage from './pages/admin/Trash';
 
 function App() {
 	return (
@@ -23,6 +24,7 @@ function App() {
 				<Route path='dashboard' element={<AdminDashboard />} />
 				<Route path='upload' element={<UploadFile />} />
 				<Route path='files' element={<AdminAllFiles />} />
+				<Route path='trash' element={<TrashPage />} />
 				<Route path='edit/:id' element={<EditFile />} />
 			</Route>
 

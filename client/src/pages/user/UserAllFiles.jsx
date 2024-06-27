@@ -6,7 +6,7 @@ export default function UserAllFiles() {
 	return (
 		<PageLayout>
 			<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
-				All Files
+				Files
 			</Typography>
 			<UserFileTable />
 		</PageLayout>
