@@ -12,7 +12,7 @@ import SendIcon from '@mui/icons-material/Send';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
-const api = import.meta.env.VITE_APP_API;
+const api = import.meta.env.VITE_API_URL;
 
 export default function EmailFile() {
 	const [loading, setIsLoading] = useState(false);

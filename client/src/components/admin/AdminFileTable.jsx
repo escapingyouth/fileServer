@@ -9,7 +9,7 @@ import ActionMenu from './ActionMenu';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import { Box } from '@mui/material';
 
-const api = import.meta.env.VITE_APP_API;
+const api = import.meta.env.VITE_API_URL;
 
 const columns = (handleDeleteFile, handleMoveToTrash) => [
 	{

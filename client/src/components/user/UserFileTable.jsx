@@ -10,7 +10,7 @@ import FavoriteStar from './FavoriteStar';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Box } from '@mui/material';
 
-const api = import.meta.env.VITE_APP_API;
+const api = import.meta.env.VITE_API_URL;
 
 const columns = (handleFavoriteChange, handleDownload) => [
 	{

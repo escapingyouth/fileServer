@@ -1,7 +1,7 @@
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const sendEmail = require('../utils/email');
+const sendEmail = require('../utils/sendEmail');
 
 exports.getAllFiles = catchAsync(async (req, res, next) => {
   const files = await File.find();
@@ -50,8 +50,6 @@ exports.uploadFile = catchAsync(async (req, res, next) => {
 exports.downloadFile = catchAsync(async (req, res, next) => {
   const file = await File.findById(req.params.id);
 
-  console.log(file);
-
   if (!file) {
     return next(new AppError('No file found with that ID', 404));
   }
@@ -71,7 +69,6 @@ exports.emailFile = catchAsync(async (req, res, next) => {
   const { recipient, subject, message, fileId } = req.body;
 
   const file = await File.findById(fileId);
-  console.log(file);
 
   if (!file) return next(new AppError('File not found', 404));
 

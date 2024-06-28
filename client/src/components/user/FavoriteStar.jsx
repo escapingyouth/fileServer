@@ -7,7 +7,7 @@ import { Tooltip } from '@mui/material';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import PropTypes from 'prop-types';
 
-const api = import.meta.env.VITE_APP_API;
+const api = import.meta.env.VITE_API_URL;
 
 export default function FavoriteStar({ fileId, isFavorite, onFavoriteChange }) {
 	const { showSnackbar } = useSnackbar();

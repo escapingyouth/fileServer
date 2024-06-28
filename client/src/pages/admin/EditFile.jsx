@@ -5,7 +5,7 @@ import axios from 'axios';
 import PageLayout from '../../components/layouts/PageLayout';
 import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 
-const api = import.meta.env.VITE_APP_API;
+const api = import.meta.env.VITE_API_URL;
 
 export default function EditFile() {
 	const { id } = useParams();

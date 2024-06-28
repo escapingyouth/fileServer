@@ -10,7 +10,7 @@ import { useSnackbar } from '../../contexts/SnackbarContext';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PageLayout from '../../components/layouts/PageLayout';
 
-const api = import.meta.env.VITE_APP_API;
+const api = import.meta.env.VITE_API_URL;
 
 const columns = (handleDeleteFile) => [
 	{

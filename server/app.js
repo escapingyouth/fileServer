@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const fileRouter = require('./routes/fileRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -17,9 +18,10 @@ if (process.env.NODE_ENV === 'development') {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use('/api/files', fileRouter);
-app.use('/api/users', fileRouter);
+app.use('/api/users', userRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl}`, 404));
