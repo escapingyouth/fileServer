@@ -1,7 +1,5 @@
 const express = require('express');
-const multer = require('multer');
 
-const upload = multer();
 const fileController = require('../controllers/fileController');
 
 const router = express.Router();
@@ -9,7 +7,7 @@ const router = express.Router();
 router
   .route('/')
   .get(fileController.getAllFiles)
-  .post(upload.single('file'), fileController.uploadFile);
+  .post(fileController.uploadFileMulter, fileController.uploadFile);
 
 router
   .route('/:id')
@@ -19,6 +17,6 @@ router
 router.patch('/:id/trash', fileController.moveToTrash);
 
 router.get('/download/:id', fileController.downloadFile);
-router.post('/email', upload.single('file'), fileController.emailFile);
+router.post('/email', fileController.emailFile);
 
 module.exports = router;

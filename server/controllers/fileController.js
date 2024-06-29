@@ -1,7 +1,14 @@
+const multer = require('multer');
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const sendEmail = require('../utils/sendEmail');
+
+const multerStorage = multer.memoryStorage();
+
+const upload = multer({ storage: multerStorage });
+
+exports.uploadFileMulter = upload.single('file');
 
 exports.getAllFiles = catchAsync(async (req, res, next) => {
   const files = await File.find();
