@@ -20,6 +20,8 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
@@ -27,7 +29,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const limiter = rateLimit({
-  limit: 100,
+  limit: 200,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP. Please try again in an hour',
 });
@@ -36,7 +38,8 @@ app.use('/api', limiter);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://another-allowed-origin.com',
+  'http://localhost:3000',
+  'https://file-server-client.vercel.app',
 ];
 
 const corsOptions = {

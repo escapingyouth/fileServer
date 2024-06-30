@@ -21,14 +21,13 @@ export const AuthProvider = ({ children }) => {
 					withCredentials: true
 				});
 				setUser(data.data.user);
-				console.log(data.data.user);
 			} catch (error) {
 				setUser(null);
 			}
 			setLoading(false);
 		};
 		checkAuth();
-	}, [user]);
+	}, []);
 
 	const login = async (email, password) => {
 		try {
@@ -44,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 				}
 			);
 			setUser(data.data.user);
-			console.log(data.data.user);
+
 			showSnackbar('Log in successful!');
 			setSubmitted(false);
 			navigate('user/dashboard');
@@ -92,10 +91,86 @@ export const AuthProvider = ({ children }) => {
 			setLoading(false);
 		}
 	};
+	const updateMe = async (formData) => {
+		try {
+			setLoading(true);
+			const { data } = await axios.patch(
+				'http://localhost:8000/api/users/updateMe',
+				formData,
+				{
+					headers: {
+						'Content-Type': 'multipart/form-data'
+					},
+					withCredentials: true
+				}
+			);
+
+			setUser(data.data.user);
+			showSnackbar('User successfully updated!');
+
+			navigate('user/dashboard');
+		} catch (error) {
+			console.log(error);
+			showSnackbar(error.response.data.message, 'error');
+		} finally {
+			setLoading(false);
+		}
+	};
+	const updateMyPassword = async (
+		passwordCurrent,
+		password,
+		passwordConfirm
+	) => {
+		try {
+			setLoading(true);
+			const { data } = await axios.patch(
+				'http://localhost:8000/api/users/updateMyPassword',
+				{ passwordCurrent, password, passwordConfirm },
+				{
+					withCredentials: true
+				}
+			);
+
+			setUser(data.data.user);
+			showSnackbar('Password successfully updated!');
+			setSubmitted(false);
+
+			navigate('user/dashboard');
+		} catch (error) {
+			console.log(error);
+			showSnackbar(error.response.data.message, 'error');
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const deleteMe = async () => {
+		try {
+			await axios.delete('http://localhost:8000/api/users/deleteMe', {
+				withCredentials: true
+			});
+			setUser(null);
+			showSnackbar('User account deleted!');
+			navigate('/');
+		} catch (error) {
+			showSnackbar(error.response.data.message, 'error');
+		}
+	};
 
 	return (
 		<AuthContext.Provider
-			value={{ user, login, signup, logout, loading, submitted, setSubmitted }}
+			value={{
+				user,
+				login,
+				signup,
+				logout,
+				updateMe,
+				updateMyPassword,
+				deleteMe,
+				loading,
+				submitted,
+				setSubmitted
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

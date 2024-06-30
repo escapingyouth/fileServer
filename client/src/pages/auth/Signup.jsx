@@ -33,7 +33,7 @@ export default function Signup() {
 		event.preventDefault();
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitted(true);
 
@@ -42,7 +42,7 @@ export default function Signup() {
 			return;
 		}
 
-		signup(name, email, password, passwordConfirm);
+		await signup(name, email, password, passwordConfirm);
 	};
 
 	return (

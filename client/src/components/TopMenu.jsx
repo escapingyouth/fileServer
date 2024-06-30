@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { styled, alpha } from '@mui/material/styles';
 import {
@@ -82,7 +83,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function TopMenu({ onHandleDrawerToggle }) {
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-	const { logout } = useAuth();
+	const { user, logout } = useAuth();
+	const navigate = useNavigate();
 
 	const isUserMenuOpen = Boolean(anchorElUser);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -103,9 +105,18 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
-	const handleClick = () => {
+	const handleLogoutClick = async () => {
 		handleUserMenuClose();
-		logout();
+		await logout();
+	};
+
+	const handleProfileClick = () => {
+		handleUserMenuClose();
+		navigate('/user/profile');
+	};
+	const handleSecurityClick = () => {
+		handleUserMenuClose();
+		navigate('/user/security');
 	};
 
 	const mobileMenuId = 'menu-mobile';
@@ -169,24 +180,36 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 					gap: 1
 				}}
 			>
-				<Avatar
-					alt='User'
-					src='/images/avatar.jpg'
-					sx={{
-						width: 24,
-						height: 24
-					}}
-				/>
+				{user ? (
+					<Avatar
+						src={`http://localhost:8000/img/users/${user.photo}`}
+						alt='Profile Picture'
+						sx={{
+							width: 24,
+							height: 24
+						}}
+					/>
+				) : (
+					<Avatar
+						src='/broken-image.jpg'
+						alt='Profile Picture'
+						sx={{
+							width: 24,
+							height: 24
+						}}
+					/>
+				)}
 
 				<Typography
 					variant='body2'
 					component='p'
 					sx={{
 						color: '#fff',
-						fontSize: '0.9rem'
+						fontSize: '0.9rem',
+						textTransform: 'capitalize'
 					}}
 				>
-					Michael
+					{user ? user.name : 'user'}
 				</Typography>
 			</MenuItem>
 		</Menu>
@@ -236,11 +259,28 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 						</Tooltip>
 					</Box>
 					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-						<Avatar
-							alt='User'
-							src='/images/avatar.jpg'
-							sx={{ marginLeft: 2, width: 24, height: 24 }}
-						/>
+						{user ? (
+							<Avatar
+								src={`http://localhost:8000/img/users/${user.photo}`}
+								alt='Profile Picture'
+								sx={{ marginLeft: 2, width: 24, height: 24 }}
+							/>
+						) : (
+							<Avatar
+								src='/broken-image.jpg'
+								alt='Profile Picture'
+								sx={{ marginLeft: 2, width: 24, height: 24 }}
+							/>
+						)}
+						<Typography
+							component='span'
+							sx={{
+								textTransform: 'capitalize',
+								ml: '0.5rem'
+							}}
+						>
+							{user ? user.name : ''}
+						</Typography>
 					</Box>
 					<Box sx={{ display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
@@ -278,7 +318,7 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 				open={isUserMenuOpen}
 				onClose={handleUserMenuClose}
 			>
-				<MenuItem onClick={handleUserMenuClose}>
+				<MenuItem onClick={handleProfileClick}>
 					<Typography
 						textAlign='center'
 						sx={{
@@ -289,7 +329,18 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 						Profile
 					</Typography>
 				</MenuItem>
-				<MenuItem onClick={handleClick}>
+				<MenuItem onClick={handleSecurityClick}>
+					<Typography
+						textAlign='center'
+						sx={{
+							color: '#fff',
+							fontSize: '0.9rem'
+						}}
+					>
+						Security
+					</Typography>
+				</MenuItem>
+				<MenuItem onClick={handleLogoutClick}>
 					<Typography
 						textAlign='center'
 						sx={{

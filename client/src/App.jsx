@@ -8,13 +8,15 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminAllFiles from './pages/admin/AdminAllFiles';
 import UploadFile from './pages/admin/UploadFile';
 import EditFile from './pages/admin/EditFile';
+import TrashPage from './pages/admin/Trash';
 
 import UserDashboard from './pages/user/UserDashboard';
 import UserAllFiles from './pages/user/UserAllFiles';
 import EmailFile from './pages/user/EmailFile';
 import FavoriteFiles from './pages/user/FavoriteFiles';
+import UserProfile from './pages/user/UserProfile';
+import UserSecurity from './pages/user/UserSecurity';
 import HelpPage from './pages/user/HelpPage';
-import TrashPage from './pages/admin/Trash';
 
 function App() {
 	return (
@@ -37,6 +39,8 @@ function App() {
 				<Route path='files' element={<UserAllFiles />} />
 				<Route path='favorites' element={<FavoriteFiles />} />
 				<Route path='help' element={<HelpPage />} />
+				<Route path='profile' element={<UserProfile />} />
+				<Route path='security' element={<UserSecurity />} />
 			</Route>
 		</Routes>
 	);

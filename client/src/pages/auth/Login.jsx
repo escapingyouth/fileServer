@@ -33,7 +33,7 @@ export default function Login() {
 		event.preventDefault();
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitted(true);
 
@@ -42,7 +42,7 @@ export default function Login() {
 			return;
 		}
 
-		login(email, password);
+		await login(email, password);
 	};
 
 	return (
