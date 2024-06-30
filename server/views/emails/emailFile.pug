@@ -1,0 +1,20 @@
+extends baseEmail
+
+block content
+
+
+  p Hello there,
+  p A file has been sent to you via the File Server. You can download it using the link below:
+
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Download File
+  p If you have any questions, feel free to reply to this email.
+  p Best regards,
+  p File Server Team

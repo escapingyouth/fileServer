@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import PropTypes from 'prop-types';
 import { styled, alpha } from '@mui/material/styles';
 import {
@@ -81,6 +82,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function TopMenu({ onHandleDrawerToggle }) {
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+	const { logout } = useAuth();
 
 	const isUserMenuOpen = Boolean(anchorElUser);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -101,7 +103,10 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
 
-	const settings = ['Profile', 'Log out'];
+	const handleClick = () => {
+		handleUserMenuClose();
+		logout();
+	};
 
 	const mobileMenuId = 'menu-mobile';
 	const renderMobileMenu = (
@@ -273,19 +278,28 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 				open={isUserMenuOpen}
 				onClose={handleUserMenuClose}
 			>
-				{settings.map((setting) => (
-					<MenuItem key={setting} onClick={handleUserMenuClose}>
-						<Typography
-							textAlign='center'
-							sx={{
-								color: '#fff',
-								fontSize: '0.9rem'
-							}}
-						>
-							{setting}
-						</Typography>
-					</MenuItem>
-				))}
+				<MenuItem onClick={handleUserMenuClose}>
+					<Typography
+						textAlign='center'
+						sx={{
+							color: '#fff',
+							fontSize: '0.9rem'
+						}}
+					>
+						Profile
+					</Typography>
+				</MenuItem>
+				<MenuItem onClick={handleClick}>
+					<Typography
+						textAlign='center'
+						sx={{
+							color: '#fff',
+							fontSize: '0.9rem'
+						}}
+					>
+						Log out
+					</Typography>
+				</MenuItem>
 			</Menu>
 		</Box>
 	);

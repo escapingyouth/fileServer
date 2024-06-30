@@ -2,7 +2,7 @@ const multer = require('multer');
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const sendEmail = require('../utils/sendEmail');
+const Email = require('../utils/email');
 
 const multerStorage = multer.memoryStorage();
 
@@ -80,12 +80,14 @@ exports.emailFile = catchAsync(async (req, res, next) => {
   if (!file) return next(new AppError('File not found', 404));
 
   try {
-    await sendEmail({
-      recipient,
-      subject,
+    const url = `${req.protocol}://${req.get('host')}/api/files/download/${fileId}`;
+
+    const options = {
       message,
       file,
-    });
+    };
+
+    await new Email({ email: recipient }, url, options).sendFile(subject);
 
     file.emailsSent += 1;
     await file.save();

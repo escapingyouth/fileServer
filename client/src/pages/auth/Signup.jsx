@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 import AuthLayout from '../../components/layouts/AuthLayout';
 import {
 	Typography,
@@ -6,18 +9,40 @@ import {
 	InputAdornment,
 	IconButton,
 	Button,
-	Link
+	Link,
+	CircularProgress
 } from '@mui/material';
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function Signup() {
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [passwordConfirm, setPasswordConfirm] = useState('');
+
+	const { signup, submitted, setSubmitted, loading } = useAuth();
+	const { showSnackbar } = useSnackbar();
+	const navigate = useNavigate();
+
 	const [showPassword, setShowPassword] = useState(false);
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
 
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		setSubmitted(true);
+
+		if (!name || !email || !password || !passwordConfirm) {
+			showSnackbar('Please fill out all required fields.', 'error');
+			return;
+		}
+
+		signup(name, email, password, passwordConfirm);
 	};
 
 	return (
@@ -28,9 +53,10 @@ export default function Signup() {
 			formHeading='Sign Up'
 			formSubHeading='Create an account to get started.'
 		>
-			<form action='' noValidate>
+			<form autoComplete='off' noValidate onSubmit={handleSubmit}>
 				<TextField
 					label='Name'
+					name='name'
 					id='name'
 					variant='outlined'
 					color='primary'
@@ -40,9 +66,13 @@ export default function Signup() {
 					sx={{
 						marginBottom: '1rem'
 					}}
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+					error={submitted && !name}
 				/>
 				<TextField
 					label='Email'
+					name='email'
 					id='email'
 					variant='outlined'
 					color='primary'
@@ -52,9 +82,13 @@ export default function Signup() {
 					sx={{
 						marginBottom: '1rem'
 					}}
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					error={submitted && !email}
 				/>
 				<TextField
 					label='Password'
+					name='password'
 					id='password'
 					InputProps={{
 						endAdornment: (
@@ -76,13 +110,20 @@ export default function Signup() {
 					sx={{
 						marginBottom: '1rem'
 					}}
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					error={submitted && !password}
 				/>
 				<TextField
 					label='Confirm password'
-					id='confirmPassword'
+					id='passwordConfirm'
+					name='passwordConfirm'
 					type='password'
 					fullWidth
 					required
+					value={passwordConfirm}
+					onChange={(e) => setPasswordConfirm(e.target.value)}
+					error={submitted && !passwordConfirm}
 				/>
 				<Button
 					type='submit'
@@ -97,8 +138,13 @@ export default function Signup() {
 							opacity: 0.9
 						}
 					}}
+					disabled={loading}
 				>
-					Sign up
+					{loading ? (
+						<CircularProgress size={25} sx={{ color: '#fff' }} disableShrink />
+					) : (
+						'Sign up'
+					)}
 				</Button>
 			</form>
 
@@ -113,10 +159,11 @@ export default function Signup() {
 			>
 				Already have an account?
 				<Link
-					href='/login'
+					onClick={() => navigate('/login')}
 					sx={{
 						fontWeight: 'medium',
-						marginLeft: '0.3rem'
+						marginLeft: '0.3rem',
+						cursor: 'pointer'
 					}}
 				>
 					Log In

@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 import AuthLayout from '../../components/layouts/AuthLayout';
 import {
 	Box,
@@ -6,6 +9,7 @@ import {
 	TextField,
 	InputAdornment,
 	IconButton,
+	CircularProgress,
 	Button,
 	Link
 } from '@mui/material';
@@ -13,12 +17,32 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function Login() {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
 	const [showPassword, setShowPassword] = useState(false);
+
+	const { login, loading, submitted, setSubmitted } = useAuth();
+	const { showSnackbar } = useSnackbar();
+
+	const navigate = useNavigate();
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show);
 
 	const handleMouseDownPassword = (event) => {
 		event.preventDefault();
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		setSubmitted(true);
+
+		if (!email || !password) {
+			showSnackbar('Please fill out all required fields.', 'error');
+			return;
+		}
+
+		login(email, password);
 	};
 
 	return (
@@ -29,7 +53,7 @@ export default function Login() {
 			formHeading='Log In'
 			formSubHeading='Welcome back! Sign in to your account.'
 		>
-			<form action='' noValidate>
+			<form autoComplete='off' noValidate onSubmit={handleSubmit}>
 				<TextField
 					label='Email'
 					id='email'
@@ -41,6 +65,9 @@ export default function Login() {
 					sx={{
 						marginBottom: '1rem'
 					}}
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					error={submitted && !email}
 				/>
 				<TextField
 					label='Password'
@@ -62,6 +89,9 @@ export default function Login() {
 					type={showPassword ? 'text' : 'password'}
 					fullWidth
 					required
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					error={submitted && !password}
 				/>
 				<Button
 					type='submit'
@@ -76,8 +106,13 @@ export default function Login() {
 							opacity: 0.9
 						}
 					}}
+					disabled={loading}
 				>
-					Log in
+					{loading ? (
+						<CircularProgress size={25} sx={{ color: '#fff' }} disableShrink />
+					) : (
+						'Log in'
+					)}
 				</Button>
 			</form>
 			<Box
@@ -102,10 +137,11 @@ export default function Login() {
 			>
 				Don&apos;t have an account?
 				<Link
-					href='/signup'
+					onClick={() => navigate('/signup')}
 					sx={{
 						fontWeight: 'medium',
-						marginLeft: '0.3rem'
+						marginLeft: '0.3rem',
+						cursor: 'pointer'
 					}}
 				>
 					Sign Up

@@ -1,10 +1,10 @@
 import { Typography } from '@mui/material';
 import PageLayout from '../../components/layouts/PageLayout';
 
-export default function AdminDashboard() {
+export default function UserDashboard() {
 	return (
-		<PageLayout isAdmin={true}>
-			<Typography>Admin Dashboard</Typography>
+		<PageLayout>
+			<Typography>User Dashboard</Typography>
 		</PageLayout>
 	);
 }

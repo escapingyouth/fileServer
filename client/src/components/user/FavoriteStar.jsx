@@ -20,7 +20,7 @@ export default function FavoriteStar({ fileId, isFavorite, onFavoriteChange }) {
 			});
 			setFavorite(!favorite);
 			onFavoriteChange(fileId, !favorite);
-			showSnackbar('File successfully favorited!', 'info');
+			showSnackbar('Added to favourites!', 'info');
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.message, 'error');

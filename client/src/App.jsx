@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 
+import Welcome from './pages/landing/Welcome';
 import Signup from './pages/auth/Signup';
 import Login from './pages/auth/Login';
 
@@ -8,6 +9,7 @@ import AdminAllFiles from './pages/admin/AdminAllFiles';
 import UploadFile from './pages/admin/UploadFile';
 import EditFile from './pages/admin/EditFile';
 
+import UserDashboard from './pages/user/UserDashboard';
 import UserAllFiles from './pages/user/UserAllFiles';
 import EmailFile from './pages/user/EmailFile';
 import FavoriteFiles from './pages/user/FavoriteFiles';
@@ -17,7 +19,8 @@ import TrashPage from './pages/admin/Trash';
 function App() {
 	return (
 		<Routes>
-			<Route index path='/login' element={<Login />} />
+			<Route path='/' element={<Welcome />} />
+			<Route path='/login' element={<Login />} />
 			<Route path='/signup' element={<Signup />} />
 
 			<Route path='/admin/*'>
@@ -29,6 +32,7 @@ function App() {
 			</Route>
 
 			<Route path='/user/*'>
+				<Route path='dashboard' element={<UserDashboard />} />
 				<Route path='email' element={<EmailFile />} />
 				<Route path='files' element={<UserAllFiles />} />
 				<Route path='favorites' element={<FavoriteFiles />} />
