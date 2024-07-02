@@ -21,6 +21,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
+const url = import.meta.env.VITE_SERVER_URL;
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -112,11 +114,16 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 
 	const handleProfileClick = () => {
 		handleUserMenuClose();
-		navigate('/user/profile');
+
+		user.role === 'admin'
+			? navigate('/admin/profile')
+			: navigate('/user/profile');
 	};
 	const handleSecurityClick = () => {
 		handleUserMenuClose();
-		navigate('/user/security');
+		user.role === 'admin'
+			? navigate('/admin/security')
+			: navigate('/user/security');
 	};
 
 	const mobileMenuId = 'menu-mobile';
@@ -182,8 +189,8 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 			>
 				{user ? (
 					<Avatar
-						src={`http://localhost:8000/img/users/${user.photo}`}
-						alt='Profile Picture'
+						src={`${url}/img/users/${user.photo}`}
+						alt={user.name}
 						sx={{
 							width: 24,
 							height: 24
@@ -261,7 +268,7 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 					<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 						{user ? (
 							<Avatar
-								src={`http://localhost:8000/img/users/${user.photo}`}
+								src={`${url}/img/users/${user.photo}`}
 								alt='Profile Picture'
 								sx={{ marginLeft: 2, width: 24, height: 24 }}
 							/>

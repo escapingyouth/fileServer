@@ -8,7 +8,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { Box } from '@mui/material';
 
-const api = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_SERVER_URL;
 
 const columns = [
 	{
@@ -86,7 +86,7 @@ export default function FavoriteFileTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await axios.get(`${api}/files`);
+				const res = await axios.get(`${url}/api/files`);
 				const files = res.data.data.files;
 
 				setFiles(
@@ -110,7 +110,7 @@ export default function FavoriteFileTable() {
 			}
 		}
 		fetchFiles();
-	}, [showSnackbar]);
+	}, []);
 
 	return (
 		<Box sx={{ height: '400px', width: '100%' }}>

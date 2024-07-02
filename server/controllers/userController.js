@@ -85,7 +85,7 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
+  const users = await User.find({ role: 'user' });
 
   res.status(200).json({
     status: 'success',

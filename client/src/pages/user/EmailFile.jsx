@@ -12,7 +12,7 @@ import SendIcon from '@mui/icons-material/Send';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
-const api = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_SERVER_URL;
 
 export default function EmailFile() {
 	const [loading, setIsLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function EmailFile() {
 	useEffect(() => {
 		const fetchFiles = async () => {
 			try {
-				const res = await axios.get(`${api}/files`);
+				const res = await axios.get(`${url}/api/files`);
 				const files = res.data.data.files;
 				setFiles(files);
 			} catch (error) {
@@ -65,7 +65,7 @@ export default function EmailFile() {
 		try {
 			setIsLoading(true);
 
-			await axios.post(`${api}/files/email`, {
+			await axios.post(`${url}/api/files/email`, {
 				recipient: formState.recipient,
 				subject: formState.subject,
 				message: formState.message,

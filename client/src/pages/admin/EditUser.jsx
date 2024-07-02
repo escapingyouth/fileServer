@@ -7,50 +7,55 @@ import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 
 const url = import.meta.env.VITE_SERVER_URL;
 
-export default function EditFile() {
+export default function EditUser() {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const { showSnackbar } = useSnackbar();
 
-	const [file, setFile] = useState({ title: '', description: '' });
+	const [user, setUser] = useState({ name: '', email: '' });
 	const [loading, setIsLoading] = useState(false);
 
 	const [submitted, setSubmitted] = useState(false);
 
 	useEffect(() => {
-		async function fetchFile() {
+		async function fetchUser() {
 			try {
-				const response = await axios.get(`${url}/api/files/${id}`);
-				setFile(response.data.data.file);
+				const response = await axios.get(`${url}/api/users/${id}`, {
+					withCredentials: true
+				});
+				console.log(response);
+				setUser(response.data.data.user);
 			} catch (error) {
 				console.error(error);
 				showSnackbar(error.message, 'error');
 			}
 		}
-		fetchFile();
-	}, [id, showSnackbar]);
+		fetchUser();
+	}, []);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setFile((prevFile) => ({ ...prevFile, [name]: value }));
+		setUser((prevUser) => ({ ...prevUser, [name]: value }));
 	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setSubmitted(true);
 
-		if (!file.title || !file.description) {
+		if (!user.name || !user.email) {
 			showSnackbar('Please fill out all required fields.', 'error');
 			return;
 		}
 		try {
 			setIsLoading(true);
 
-			await axios.patch(`${url}/api/files/${id}`, file);
+			await axios.patch(`${url}/api/users/${id}`, user, {
+				withCredentials: true
+			});
 
-			showSnackbar('File edited successfully!', 'info');
+			showSnackbar('User edited successfully!', 'info');
 			setSubmitted(false);
-			navigate('/admin/files');
+			navigate('/admin/users');
 		} catch (error) {
 			console.error(error);
 			showSnackbar(error.message, 'error');
@@ -63,35 +68,35 @@ export default function EditFile() {
 		<PageLayout isAdmin={true}>
 			<form onSubmit={handleSubmit}>
 				<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
-					Edit File
+					Edit User
 				</Typography>
 				<TextField
-					label='Title'
-					id='title'
-					name='title'
+					label='Name'
+					id='name'
+					name='name'
 					variant='outlined'
 					color='primary'
 					type='text'
 					fullWidth
-					placeholder='Enter new title'
-					value={file.title}
+					placeholder='Enter new name'
+					value={user.name}
 					onChange={handleChange}
 					sx={{ mb: '1rem' }}
-					error={submitted && !file.title}
+					error={submitted && !user.name}
 				/>
 				<TextField
-					label='Description'
-					id='description'
-					name='description'
+					label='Email'
+					id='email'
+					name='email'
 					variant='outlined'
 					color='primary'
-					type='text'
+					type='email'
 					fullWidth
-					placeholder='Enter new description'
-					value={file.description}
+					placeholder='Enter new email'
+					value={user.email}
 					onChange={handleChange}
 					sx={{ mb: '1rem' }}
-					error={submitted && !file.description}
+					error={submitted && !user.email}
 				/>
 
 				<Button

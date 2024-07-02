@@ -49,13 +49,12 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     role: req.body.role,
   });
-  const url = `${req.protocol}://${req.get('host')}/me`;
+  const url = `https://file-server-client.vercel.app/auth/login`;
 
   try {
     await new Email(newUser, url).sendWelcome();
   } catch (err) {
     console.log(err);
-    // console.error('Error sending welcome email:', err);
   }
 
   createSendToken(newUser, 201, res);
@@ -86,9 +85,7 @@ exports.logout = (req, res) => {
 };
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
-  console.log(user);
 
   if (!user) {
     return next(new AppError('There is no user with that email address', 404));
@@ -101,7 +98,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   try {
     // for api
     // const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
-    const resetUrl = `http://localhost:5173/auth/reset-password/${resetToken}`;
+    const resetUrl = `https://file-server-client.vercel.app/auth/reset-password/${resetToken}`;
 
     await new Email(user, resetUrl).sendPasswordReset();
 

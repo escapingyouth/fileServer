@@ -142,7 +142,6 @@ exports.emailFile = catchAsync(async (req, res, next) => {
       message: 'Email sent successfully',
     });
   } catch (error) {
-    console.log(error);
     return next(
       new AppError(
         'There was an error sending the email. Try again later!',

@@ -260,6 +260,82 @@ export default function HelpPage() {
 								}}
 							/>
 						</Grid>
+						<Grid item xl={6}>
+							<Typography
+								variant='h6'
+								component='h3'
+								gutterBottom
+								sx={{
+									fontWeight: 'semi-bold',
+									fontSize: {
+										xs: '1rem',
+										md: '1.2rem'
+									}
+								}}
+							>
+								Forgot Password
+							</Typography>
+							<Typography
+								variant='body1'
+								component='p'
+								gutterBottom
+								sx={{
+									height: '96px'
+								}}
+							>
+								In case you forget your password, you have the ability to reset
+								by filling in your user email address. A link will then be sent
+								to your email so you can reset your password
+							</Typography>
+							<Box
+								sx={{
+									backgroundImage: 'url(/images/help/forgot-password.PNG)',
+									backgroundRepeat: 'no-repeat',
+									backgroundSize: 'contain',
+									backgroundPosition: 'center',
+									height: '250px',
+									mt: '1.5rem'
+								}}
+							/>
+						</Grid>
+						<Grid item xl={6}>
+							<Typography
+								variant='h6'
+								component='h3'
+								gutterBottom
+								sx={{
+									fontWeight: 'semi-bold',
+									fontSize: {
+										xs: '1rem',
+										md: '1.2rem'
+									}
+								}}
+							>
+								Reset Password
+							</Typography>
+							<Typography
+								variant='body1'
+								component='p'
+								gutterBottom
+								sx={{
+									height: '96px'
+								}}
+							>
+								Once you access the reset link available in your email, you can
+								now proceed to reset your password by entering the new password
+								and confirming it
+							</Typography>
+							<Box
+								sx={{
+									backgroundImage: 'url(/images/help/reset-password.PNG)',
+									backgroundRepeat: 'no-repeat',
+									backgroundSize: 'contain',
+									backgroundPosition: 'center',
+									height: '250px',
+									mt: '1.5rem'
+								}}
+							/>
+						</Grid>
 					</Grid>
 				</Box>
 				<Box sx={{ mt: '6rem' }}>

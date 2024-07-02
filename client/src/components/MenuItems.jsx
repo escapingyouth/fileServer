@@ -1,6 +1,6 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DescriptionIcon from '@mui/icons-material/Description';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import PersonIcon from '@mui/icons-material/Person';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
@@ -14,14 +14,14 @@ export const adminMenuItems = [
 		path: '/admin/dashboard'
 	},
 	{
-		text: 'All Files',
+		text: 'Files',
 		icon: <DescriptionIcon color='#fff' />,
 		path: '/admin/files'
 	},
 	{
-		text: 'Statistics',
-		icon: <BarChartIcon color='#fff' />,
-		path: '/admin/statistics'
+		text: 'Users',
+		icon: <PersonIcon color='#fff' />,
+		path: '/admin/users'
 	},
 	{
 		text: 'Upload File',

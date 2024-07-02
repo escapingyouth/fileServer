@@ -5,7 +5,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
-const api = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_SERVER_URL;
 
 export default function UploadFile() {
 	const [loading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ export default function UploadFile() {
 		try {
 			setIsLoading(true);
 
-			await axios.post(`${api}/files`, formData, {
+			await axios.post(`${url}/api/files`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data'
 				}
@@ -115,9 +115,12 @@ export default function UploadFile() {
 					name='file'
 					fullWidth
 					onChange={handleChange}
-					sx={{ mb: '2rem' }}
+					sx={{ mb: '0.5rem' }}
 					error={submitted && !formState.uploadedFile}
 				/>
+				<Typography component='p' variant='body2' sx={{ mb: '2rem' }}>
+					*Uploads should not exceed 7MB in size
+				</Typography>
 
 				<Button
 					type='submit'

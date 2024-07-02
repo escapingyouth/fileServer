@@ -10,7 +10,7 @@ import FavoriteStar from './FavoriteStar';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Box } from '@mui/material';
 
-const api = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_SERVER_URL;
 
 const columns = (handleFavoriteChange, handleDownload) => [
 	{
@@ -114,7 +114,7 @@ export default function UserFileTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await axios.get(`${api}/files`);
+				const res = await axios.get(`${url}/api/files`);
 				const files = res.data.data.files;
 
 				setFiles(
@@ -148,12 +148,9 @@ export default function UserFileTable() {
 
 	const handleDownload = async (fileId, fileName) => {
 		try {
-			const response = await axios.get(
-				`http://localhost:8000/api/files/download/${fileId}`,
-				{
-					responseType: 'blob'
-				}
-			);
+			const response = await axios.get(`${url}/api/files/download/${fileId}`, {
+				responseType: 'blob'
+			});
 
 			const url = window.URL.createObjectURL(new Blob([response.data]));
 

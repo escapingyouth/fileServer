@@ -6,6 +6,8 @@ import { useSnackbar } from './SnackbarContext';
 
 const AuthContext = createContext();
 
+const url = import.meta.env.VITE_SERVER_URL;
+
 export const AuthProvider = ({ children }) => {
 	const { showSnackbar } = useSnackbar();
 	const [user, setUser] = useState(null);
@@ -17,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 	useEffect(() => {
 		const checkAuth = async () => {
 			try {
-				const { data } = await axios.get('http://localhost:8000/api/users/me', {
+				const { data } = await axios.get(`${url}/api/users/me`, {
 					withCredentials: true
 				});
 				setUser(data.data.user);
@@ -33,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			setLoading(true);
 			const { data } = await axios.post(
-				'http://localhost:8000/api/users/login',
+				`${url}/api/users/login`,
 				{
 					email,
 					password
@@ -46,9 +48,12 @@ export const AuthProvider = ({ children }) => {
 
 			showSnackbar('Log in successful!');
 			setSubmitted(false);
-			console.log(user);
-			if (user.role === 'admin') navigate('admin/dashboard');
-			else navigate('user/dashboard');
+
+			if (data.data.user.role === 'admin') {
+				navigate('admin/dashboard');
+			} else {
+				navigate('user/dashboard');
+			}
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
@@ -61,7 +66,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			setLoading(true);
 			const { data } = await axios.post(
-				'http://localhost:8000/api/users/signup',
+				`${url}/api/users/signup`,
 				{ name, email, password, passwordConfirm },
 				{ withCredentials: true }
 			);
@@ -69,9 +74,12 @@ export const AuthProvider = ({ children }) => {
 			setUser(data.data.user);
 			showSnackbar('Sign up successful!');
 			setSubmitted(false);
-			console.log(user.role);
-			if (user.role === 'admin') navigate('admin/dashboard');
-			else navigate('user/dashboard');
+
+			if (data.data.user.role === 'admin') {
+				navigate('admin/dashboard');
+			} else {
+				navigate('user/dashboard');
+			}
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
@@ -83,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 	const logout = async () => {
 		try {
 			setLoading(true);
-			await axios.get('http://localhost:8000/api/users/logout', {
+			await axios.get(`${url}/api/users/logout`, {
 				withCredentials: true
 			});
 			setUser(null);
@@ -100,7 +108,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			setLoading(true);
 			await axios.post(
-				'http://localhost:8000/api/users/forgotPassword',
+				`${url}/api/users/forgotPassword`,
 				{ email },
 				{ withCredentials: true }
 			);
@@ -119,7 +127,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			setLoading(true);
 			await axios.patch(
-				`http://localhost:8000/api/users//resetPassword/${token}`,
+				`${url}/api/users/resetPassword/${token}`,
 				{ password, passwordConfirm },
 				{ withCredentials: true }
 			);
@@ -139,7 +147,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			setLoading(true);
 			const { data } = await axios.patch(
-				'http://localhost:8000/api/users/updateMe',
+				`${url}/api/users/updateMe`,
 				formData,
 				{
 					headers: {
@@ -168,7 +176,7 @@ export const AuthProvider = ({ children }) => {
 		try {
 			setLoading(true);
 			const { data } = await axios.patch(
-				'http://localhost:8000/api/users/updateMyPassword',
+				`${url}/api/users/updateMyPassword`,
 				{ passwordCurrent, password, passwordConfirm },
 				{
 					withCredentials: true
@@ -190,7 +198,7 @@ export const AuthProvider = ({ children }) => {
 
 	const deleteMe = async () => {
 		try {
-			await axios.delete('http://localhost:8000/api/users/deleteMe', {
+			await axios.delete(`${url}/api/users/deleteMe`, {
 				withCredentials: true
 			});
 			setUser(null);

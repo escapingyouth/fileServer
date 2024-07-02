@@ -18,7 +18,7 @@ import { useSnackbar } from '../../contexts/SnackbarContext';
 
 const url = import.meta.env.VITE_SERVER_URL;
 
-export default function UserProfile() {
+export default function AdminProfile() {
 	const { user, updateMe, loading } = useAuth();
 	const { showSnackbar } = useSnackbar();
 
@@ -45,7 +45,7 @@ export default function UserProfile() {
 	};
 
 	return (
-		<PageLayout>
+		<PageLayout isAdmin={true}>
 			<Container maxWidth='md' sx={{ py: 4 }}>
 				<Box sx={{ mb: 4 }}>
 					<Typography
@@ -56,7 +56,7 @@ export default function UserProfile() {
 							mb: '0.5rem'
 						}}
 					>
-						User Profile
+						Admin Profile
 					</Typography>
 					<Typography color='textSecondary'>
 						Manage your account information and preferences.
@@ -95,7 +95,36 @@ export default function UserProfile() {
 										onChange={(e) => setEmail(e.target.value)}
 									/>
 								</Box>
-
+								{/* <Box sx={{ mb: 2 }}>
+								<TextField
+									id='currentPassword'
+									name='currentPassword'
+									label='Current Password'
+									type='password'
+									defaultValue='********'
+									fullWidth
+									variant='outlined'
+									margin='normal'
+								/>
+								<TextField
+									id='password'
+									label='New Password'
+									name='password'
+									type='password'
+									fullWidth
+									variant='outlined'
+									margin='normal'
+								/>
+								<TextField
+									id='passwordConfirm'
+									label='Confirm Password'
+									name='passwordConfirm'
+									type='password'
+									fullWidth
+									variant='outlined'
+									margin='normal'
+								/>
+							</Box> */}
 								<Box
 									sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}
 								>

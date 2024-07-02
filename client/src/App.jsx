@@ -9,8 +9,12 @@ import ResetPassword from './pages/auth/ResetPassword';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminAllFiles from './pages/admin/AdminAllFiles';
+import AdminProfile from './pages/admin/AdminProfile';
+import AdminSecurity from './pages/admin/AdminSecurity';
+import AllUsers from './pages/admin/AllUsers';
 import UploadFile from './pages/admin/UploadFile';
 import EditFile from './pages/admin/EditFile';
+import EditUser from './pages/admin/EditUser';
 import TrashPage from './pages/admin/Trash';
 
 import UserDashboard from './pages/user/UserDashboard';
@@ -32,10 +36,14 @@ function App() {
 
 			<Route path='/admin/*'>
 				<Route path='dashboard' element={<AdminDashboard />} />
+				<Route path='users' element={<AllUsers />} />
 				<Route path='upload' element={<UploadFile />} />
 				<Route path='files' element={<AdminAllFiles />} />
 				<Route path='trash' element={<TrashPage />} />
-				<Route path='edit/:id' element={<EditFile />} />
+				<Route path='edit/file/:id' element={<EditFile />} />
+				<Route path='edit/user/:id' element={<EditUser />} />
+				<Route path='profile' element={<AdminProfile />} />
+				<Route path='security' element={<AdminSecurity />} />
 			</Route>
 
 			<Route path='/user/*'>

@@ -9,7 +9,7 @@ import ActionMenu from './ActionMenu';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import { Box } from '@mui/material';
 
-const api = import.meta.env.VITE_API_URL;
+const url = import.meta.env.VITE_SERVER_URL;
 
 const columns = (handleDeleteFile, handleMoveToTrash) => [
 	{
@@ -102,7 +102,7 @@ export default function AdminFileTable() {
 			try {
 				setIsLoading(true);
 
-				const res = await axios.get(`${api}/files`);
+				const res = await axios.get(`${url}/api/files`);
 				const files = res.data.data.files;
 
 				setFiles(
@@ -123,12 +123,12 @@ export default function AdminFileTable() {
 			}
 		}
 		fetchFiles();
-	}, [showSnackbar]);
+	}, []);
 
 	const handleMoveToTrash = async (fileId) => {
 		try {
 			axios
-				.patch(`${api}/files/${fileId}/trash`)
+				.patch(`${url}/api/files/${fileId}/trash`)
 				.then(() => {
 					showSnackbar('File moved to trash successfully!', 'warning');
 					setFiles(files.filter((file) => file.id !== fileId));
@@ -144,7 +144,7 @@ export default function AdminFileTable() {
 
 	const handleDeleteFile = async (fileId) => {
 		try {
-			await axios.delete(`${api}/files/${fileId}`);
+			await axios.delete(`${url}/api/files/${fileId}`);
 
 			setFiles(files.filter((file) => file.id !== fileId));
 
