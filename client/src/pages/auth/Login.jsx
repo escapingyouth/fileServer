@@ -121,7 +121,15 @@ export default function Login() {
 					justifyContent: 'flex-end'
 				}}
 			>
-				<Link color='#5C677D' href='#' variant='body2' underline='hover'>
+				<Link
+					color='#5C677D'
+					onClick={() => navigate('/auth/forgot-password')}
+					variant='body2'
+					underline='hover'
+					sx={{
+						cursor: 'pointer'
+					}}
+				>
 					Forgot password?
 				</Link>
 			</Box>
@@ -137,7 +145,7 @@ export default function Login() {
 			>
 				Don&apos;t have an account?
 				<Link
-					onClick={() => navigate('/signup')}
+					onClick={() => navigate('/auth/signup')}
 					sx={{
 						fontWeight: 'medium',
 						marginLeft: '0.3rem',

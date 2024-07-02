@@ -59,7 +59,7 @@ export default function Welcome() {
 								opacity: 0.9
 							}
 						}}
-						onClick={() => navigate('/signup')}
+						onClick={() => navigate('/auth/signup')}
 					>
 						Sign up
 					</Button>
@@ -78,7 +78,7 @@ export default function Welcome() {
 								color: '#050A44'
 							}
 						}}
-						onClick={() => navigate('/login')}
+						onClick={() => navigate('/auth/login')}
 					>
 						Log in
 					</Button>

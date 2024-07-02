@@ -17,7 +17,7 @@ export default function AuthLayout({
 					justifyContent='center'
 					alignItems='center'
 					sx={{
-						backgroundImage: `url(images/${bgImage})`,
+						backgroundImage: `url(/images/${bgImage})`,
 						backgroundRepeat: 'no-repeat',
 						backgroundSize: 'cover',
 						backgroundPosition: 'center',

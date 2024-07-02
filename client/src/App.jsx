@@ -1,8 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 
 import Welcome from './pages/landing/Welcome';
+
 import Signup from './pages/auth/Signup';
 import Login from './pages/auth/Login';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminAllFiles from './pages/admin/AdminAllFiles';
@@ -22,8 +25,10 @@ function App() {
 	return (
 		<Routes>
 			<Route path='/' element={<Welcome />} />
-			<Route path='/login' element={<Login />} />
-			<Route path='/signup' element={<Signup />} />
+			<Route path='auth/login' element={<Login />} />
+			<Route path='auth/signup' element={<Signup />} />
+			<Route path='auth/forgot-password' element={<ForgotPassword />} />
+			<Route path='auth/reset-password/:token' element={<ResetPassword />} />
 
 			<Route path='/admin/*'>
 				<Route path='dashboard' element={<AdminDashboard />} />

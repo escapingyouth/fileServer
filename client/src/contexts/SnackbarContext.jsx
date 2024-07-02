@@ -27,7 +27,7 @@ export const SnackbarProvider = ({ children }) => {
 			{children}
 			<Snackbar
 				open={snackbar.open}
-				autoHideDuration={5000}
+				autoHideDuration={2000}
 				onClose={handleClose}
 			>
 				<Alert

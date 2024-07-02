@@ -159,7 +159,7 @@ export default function Signup() {
 			>
 				Already have an account?
 				<Link
-					onClick={() => navigate('/login')}
+					onClick={() => navigate('/auth/login')}
 					sx={{
 						fontWeight: 'medium',
 						marginLeft: '0.3rem',

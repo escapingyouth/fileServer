@@ -67,7 +67,8 @@ export const AuthProvider = ({ children }) => {
 			setUser(data.data.user);
 			showSnackbar('Sign up successful!');
 			setSubmitted(false);
-			navigate('user/dashboard');
+			console.log(user.role);
+			// navigate('user/dashboard');
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
@@ -83,14 +84,54 @@ export const AuthProvider = ({ children }) => {
 				withCredentials: true
 			});
 			setUser(null);
-			showSnackbar('User logged out');
-			navigate('/login');
+			showSnackbar('Logged out!');
+			navigate('/auth/login');
 		} catch (error) {
 			showSnackbar(error.response.data.message, 'error');
 		} finally {
 			setLoading(false);
 		}
 	};
+
+	const forgotPassword = async (email) => {
+		try {
+			setLoading(true);
+			await axios.post(
+				'http://localhost:8000/api/users/forgotPassword',
+				{ email },
+				{ withCredentials: true }
+			);
+
+			showSnackbar('Password reset link sent! Check your email');
+			setSubmitted(false);
+		} catch (error) {
+			console.log(error);
+			showSnackbar(error.response.data.message, 'error');
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const resetPassword = async (token, password, passwordConfirm) => {
+		try {
+			setLoading(true);
+			await axios.patch(
+				`http://localhost:8000/api/users//resetPassword/${token}`,
+				{ password, passwordConfirm },
+				{ withCredentials: true }
+			);
+
+			showSnackbar('Password reset successful!');
+			setSubmitted(false);
+			navigate('/auth/login');
+		} catch (error) {
+			console.log(error);
+			showSnackbar(error.response.data.message, 'error');
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const updateMe = async (formData) => {
 		try {
 			setLoading(true);
@@ -163,6 +204,8 @@ export const AuthProvider = ({ children }) => {
 				user,
 				login,
 				signup,
+				forgotPassword,
+				resetPassword,
 				logout,
 				updateMe,
 				updateMyPassword,

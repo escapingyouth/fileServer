@@ -1,12 +1,40 @@
+const path = require('path');
 const multer = require('multer');
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const Email = require('../utils/email');
 
-const multerStorage = multer.memoryStorage();
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(
+      null,
+      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`,
+    );
+  },
+});
+const checkFileType = (file, cb) => {
+  const filetypes = /jpeg|jpg|png|gif|webp|svg|ppt|pptx|xls|xlsx|pdf|doc|docx/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
 
-const upload = multer({ storage: multerStorage });
+  if (mimetype && extname) {
+    cb(null, true);
+  } else {
+    cb(new AppError('File not supported for upload!', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  limits: { fileSize: 1 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    checkFileType(file, cb);
+  },
+});
 
 exports.uploadFileMulter = upload.single('file');
 
@@ -38,14 +66,14 @@ exports.getFile = catchAsync(async (req, res, next) => {
 exports.uploadFile = catchAsync(async (req, res, next) => {
   if (!req.file) return next(new AppError('No file uploaded', 400));
 
-  const { originalname, size, mimetype, buffer } = req.file;
+  const { title, description } = req.body;
 
   const newFile = await File.create({
-    ...req.body,
-    originalname,
-    size,
-    mimetype,
-    buffer,
+    title,
+    description,
+    originalname: req.file.originalname,
+    size: req.file.size,
+    mimetype: req.file.mimetype,
   });
 
   res.status(201).json({
@@ -61,10 +89,9 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  res.set({
-    'Content-Disposition': `attachment; filename="${file.originalname}"`,
-    'Content-Type': file.mimetype,
-  });
+  const filePath = path.join(__dirname, '../public/uploads', file.originalname);
+
+  await res.download(filePath, file.originalname);
 
   file.downloads += 1;
   await file.save();

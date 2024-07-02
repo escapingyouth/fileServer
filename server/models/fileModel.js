@@ -37,8 +37,6 @@ const fileSchema = new mongoose.Schema(
 
     mimetype: String,
 
-    buffer: Buffer,
-
     uploadedAt: {
       type: Date,
       default: Date.now(),

@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+
 const pug = require('pug');
 const htmlToText = require('html-to-text');
 
@@ -14,10 +15,11 @@ module.exports = class Email {
   newTransport() {
     if (process.env.NODE_ENV === 'production ') {
       return nodemailer.createTransport({
-        service: 'SendGrid',
+        host: 'smtp.resend.com',
+        secure: true,
         auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD,
+          user: 'resend',
+          pass: process.env.RESEND_API_KEY,
         },
       });
     }

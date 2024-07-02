@@ -51,7 +51,12 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
   const url = `${req.protocol}://${req.get('host')}/me`;
 
-  await new Email(newUser, url).sendWelcome();
+  try {
+    await new Email(newUser, url).sendWelcome();
+  } catch (err) {
+    console.log(err);
+    // console.error('Error sending welcome email:', err);
+  }
 
   createSendToken(newUser, 201, res);
 });
@@ -81,7 +86,9 @@ exports.logout = (req, res) => {
 };
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
+  console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
+  console.log(user);
 
   if (!user) {
     return next(new AppError('There is no user with that email address', 404));
@@ -92,7 +99,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   try {
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+    // for api
+    // const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+    const resetUrl = `http://localhost:5173/auth/reset-password/${resetToken}`;
+
     await new Email(user, resetUrl).sendPasswordReset();
 
     res.status(200).json({
@@ -130,7 +140,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
-  user.passwordChangedAt = Date.now();
+  user.passwordChangedAt = undefined;
 
   await user.save();
 
