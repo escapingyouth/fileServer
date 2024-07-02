@@ -17,7 +17,17 @@ const fileSchema = new mongoose.Schema(
       ],
     },
 
+    filename: {
+      type: String,
+      unique: true,
+    },
+
     originalname: String,
+
+    path: {
+      type: String,
+      unique: true,
+    },
 
     description: {
       type: String,

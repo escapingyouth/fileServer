@@ -46,7 +46,9 @@ export const AuthProvider = ({ children }) => {
 
 			showSnackbar('Log in successful!');
 			setSubmitted(false);
-			navigate('user/dashboard');
+			console.log(user);
+			if (user.role === 'admin') navigate('admin/dashboard');
+			else navigate('user/dashboard');
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
@@ -68,7 +70,8 @@ export const AuthProvider = ({ children }) => {
 			showSnackbar('Sign up successful!');
 			setSubmitted(false);
 			console.log(user.role);
-			// navigate('user/dashboard');
+			if (user.role === 'admin') navigate('admin/dashboard');
+			else navigate('user/dashboard');
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');

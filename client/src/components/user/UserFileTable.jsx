@@ -148,16 +148,18 @@ export default function UserFileTable() {
 
 	const handleDownload = async (fileId, fileName) => {
 		try {
-			const response = await axios.get(`${api}/files/download/${fileId}`, {
-				responseType: 'blob'
-			});
+			const response = await axios.get(
+				`http://localhost:8000/api/files/download/${fileId}`,
+				{
+					responseType: 'blob'
+				}
+			);
 
 			const url = window.URL.createObjectURL(new Blob([response.data]));
 
 			const link = document.createElement('a');
 			link.href = url;
 			link.setAttribute('download', fileName);
-
 			document.body.appendChild(link);
 			link.click();
 			link.parentNode.removeChild(link);
@@ -167,7 +169,6 @@ export default function UserFileTable() {
 			showSnackbar('Error downloading file', 'error');
 		}
 	};
-
 	return (
 		<Box sx={{ height: '400px', width: '100%' }}>
 			<DataGrid

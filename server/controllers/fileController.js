@@ -1,4 +1,6 @@
+const fs = require('fs');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
@@ -10,10 +12,9 @@ const multerStorage = multer.diskStorage({
     cb(null, 'public/uploads');
   },
   filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`,
-    );
+    const ext = path.extname(file.originalname);
+
+    cb(null, `${file.fieldname}-${uuidv4()}${ext}`);
   },
 });
 const checkFileType = (file, cb) => {
@@ -30,7 +31,7 @@ const checkFileType = (file, cb) => {
 
 const upload = multer({
   storage: multerStorage,
-  limits: { fileSize: 1 * 1024 * 1024 },
+  limits: { fileSize: 7 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb);
   },
@@ -70,8 +71,10 @@ exports.uploadFile = catchAsync(async (req, res, next) => {
 
   const newFile = await File.create({
     title,
-    description,
+    filename: req.file.filename,
     originalname: req.file.originalname,
+    path: req.file.path,
+    description,
     size: req.file.size,
     mimetype: req.file.mimetype,
   });
@@ -89,14 +92,29 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  const filePath = path.join(__dirname, '../public/uploads', file.originalname);
+  const filePath = file.path;
 
-  await res.download(filePath, file.originalname);
+  if (!fs.existsSync(filePath)) {
+    return next(new AppError('File does not exist on the server', 404));
+  }
 
-  file.downloads += 1;
-  await file.save();
+  res.set({
+    'Content-Disposition': `attachment; filename="${file.originalname}"`,
+    'Content-Type': file.mimetype,
+  });
 
-  res.send(file.buffer);
+  res.download(filePath, file.originalname, async (err) => {
+    if (err) {
+      return next(new AppError('Error downloading the file', 500));
+    }
+
+    try {
+      file.downloads += 1;
+      await file.save();
+    } catch (error) {
+      return next(new AppError('Error updating file download count', 500));
+    }
+  });
 });
 
 exports.emailFile = catchAsync(async (req, res, next) => {
