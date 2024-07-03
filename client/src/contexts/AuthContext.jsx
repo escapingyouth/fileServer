@@ -156,6 +156,8 @@ export const AuthProvider = ({ children }) => {
 					withCredentials: true
 				}
 			);
+			console.log(formData);
+			console.log(data);
 
 			setUser(data.data.user);
 			showSnackbar('User successfully updated!');
