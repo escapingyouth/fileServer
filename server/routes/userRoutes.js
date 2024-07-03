@@ -3,6 +3,8 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 
+console.log(process.env.NODE_ENV);
+
 const router = express.Router();
 
 router.get('/', userController.getAllUsers);
