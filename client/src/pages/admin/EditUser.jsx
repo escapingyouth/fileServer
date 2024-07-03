@@ -65,7 +65,7 @@ export default function EditUser() {
 	};
 
 	return (
-		<PageLayout isAdmin={true}>
+		<PageLayout>
 			<form onSubmit={handleSubmit}>
 				<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 					Edit User

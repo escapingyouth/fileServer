@@ -8,47 +8,64 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { Box, Typography, Tooltip, IconButton } from '@mui/material';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import RestorePageIcon from '@mui/icons-material/RestorePage';
 import PageLayout from '../../components/layouts/PageLayout';
 
 const url = import.meta.env.VITE_SERVER_URL;
 
-const columns = (handleDeleteFile) => [
+const columns = (handleDeleteFile, handleRestoreFile) => [
 	{
 		field: 'filename',
 		headerName: 'File name',
-		width: 250
+		width: 200
 	},
 	{
 		field: 'description',
 		headerName: 'Description',
-		width: 400
+		width: 300
 	},
 	{
 		field: 'dateModified',
 		headerName: 'Date Modified',
-		width: 150
+		width: 120
 	},
 	{
 		field: 'size',
 		headerName: 'Size',
-		width: 150,
+		width: 140,
 		type: 'number',
 		valueFormatter: (params) => formatFileSize(params)
 	},
 	{
 		field: 'fileType',
 		headerName: 'File Type',
-		width: 100,
+		width: 120,
 		renderCell: (params) => params.value
 	},
+
 	{
 		field: 'delete',
 		headerName: 'Delete',
-		width: 100,
+		width: 120,
 		renderCell: (params) => (
 			<Tooltip title='Delete'>
 				<IconButton onClick={() => handleDeleteFile(params.row.id)}>
 					<DeleteForeverIcon color='error' />
+				</IconButton>
+			</Tooltip>
+		)
+	},
+	{
+		field: 'restore',
+		headerName: 'Restore',
+		width: 100,
+		renderCell: (params) => (
+			<Tooltip title='Restore'>
+				<IconButton>
+					<RestorePageIcon
+						onClick={() => handleRestoreFile(params.row.id)}
+						color='warning'
+					/>
 				</IconButton>
 			</Tooltip>
 		)
@@ -133,15 +150,25 @@ export default function TrashPage() {
 		}
 	};
 
+	const handleRestoreFile = async (fileId) => {
+		try {
+			await axios.patch(`${url}/api/files/restore/${fileId}`);
+			setFiles(files.filter((file) => file.id !== fileId));
+			showSnackbar('File restored successfully!');
+		} catch (error) {
+			showSnackbar(error.message, 'error');
+		}
+	};
+
 	return (
-		<PageLayout isAdmin={true}>
+		<PageLayout>
 			<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 				All Files
 			</Typography>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid
 					rows={files}
-					columns={columns(handleDeleteFile)}
+					columns={columns(handleDeleteFile, handleRestoreFile)}
 					initialState={{
 						pagination: {
 							paginationModel: { page: 0, pageSize: 5 }

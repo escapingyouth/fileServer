@@ -71,7 +71,7 @@ export default function UploadFile() {
 	};
 
 	return (
-		<PageLayout isAdmin={true}>
+		<PageLayout>
 			<form onSubmit={handleUpload} noValidate encType='multipart/form-data'>
 				<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 					Upload a File

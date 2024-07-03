@@ -106,14 +106,16 @@ export default function AdminFileTable() {
 				const files = res.data.data.files;
 
 				setFiles(
-					files.map((file) => ({
-						id: file._id,
-						filename: file.title,
-						size: file.size,
-						dateModified: formatDate(file.uploadedAt),
-						fileType: getFileIcon(file.mimetype),
-						description: file.description
-					}))
+					files
+						.filter((file) => !file.isTrashed)
+						.map((file) => ({
+							id: file._id,
+							filename: file.title,
+							size: file.size,
+							dateModified: formatDate(file.uploadedAt),
+							fileType: getFileIcon(file.mimetype),
+							description: file.description
+						}))
 				);
 			} catch (error) {
 				console.log(error);
@@ -128,7 +130,7 @@ export default function AdminFileTable() {
 	const handleMoveToTrash = async (fileId) => {
 		try {
 			axios
-				.patch(`${url}/api/files/${fileId}/trash`)
+				.patch(`${url}/api/files/trash/${fileId}`)
 				.then(() => {
 					showSnackbar('File moved to trash successfully!', 'warning');
 					setFiles(files.filter((file) => file.id !== fileId));

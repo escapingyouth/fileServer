@@ -60,7 +60,7 @@ export default function EditFile() {
 	};
 
 	return (
-		<PageLayout isAdmin={true}>
+		<PageLayout>
 			<form onSubmit={handleSubmit}>
 				<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 					Edit File

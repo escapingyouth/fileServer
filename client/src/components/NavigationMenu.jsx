@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 import { useTheme } from '@mui/material/styles';
 
@@ -23,8 +23,14 @@ import { adminMenuItems, userMenuItems } from './MenuItems';
 
 const drawerWidth = 240;
 
-function DrawerItems({ isAdmin }) {
-	const menuItemsToRender = isAdmin ? adminMenuItems : userMenuItems;
+function DrawerItems() {
+	const { user } = useAuth();
+
+	let menuItemsToRender;
+
+	if (user) {
+		menuItemsToRender = user.role === 'admin' ? adminMenuItems : userMenuItems;
+	}
 	const navigate = useNavigate();
 	const location = useLocation();
 	const theme = useTheme();
@@ -90,11 +96,7 @@ function DrawerItems({ isAdmin }) {
 	);
 }
 
-DrawerItems.propTypes = {
-	isAdmin: PropTypes.bool
-};
-
-export default function NavigationMenu({ isAdmin }) {
+export default function NavigationMenu() {
 	const theme = useTheme();
 
 	const [mobileOpen, setMobileOpen] = useState(false);
@@ -143,7 +145,7 @@ export default function NavigationMenu({ isAdmin }) {
 						}
 					}}
 				>
-					<DrawerItems isAdmin={isAdmin} />
+					<DrawerItems />
 				</Drawer>
 				<Drawer
 					variant='permanent'
@@ -157,13 +159,9 @@ export default function NavigationMenu({ isAdmin }) {
 					}}
 					open
 				>
-					<DrawerItems isAdmin={isAdmin} />
+					<DrawerItems />
 				</Drawer>
 			</Box>
 		</>
 	);
 }
-
-NavigationMenu.propTypes = {
-	isAdmin: PropTypes.bool
-};

@@ -4,7 +4,7 @@ import UserTable from '../../components/admin/UserTable';
 
 export default function AllUsers() {
 	return (
-		<PageLayout isAdmin={true}>
+		<PageLayout>
 			<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 				Users
 			</Typography>

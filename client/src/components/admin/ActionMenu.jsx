@@ -22,7 +22,7 @@ export default function ActionMenu({ fileId, onMoveToTrash, onDelete }) {
 	};
 
 	const handleEdit = () => {
-		navigate(`/admin/file/edit/${fileId}`);
+		navigate(`/admin/edit/file/${fileId}`);
 		handleClose();
 	};
 

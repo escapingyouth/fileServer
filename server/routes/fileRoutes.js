@@ -14,7 +14,9 @@ router
   .get(fileController.getFile)
   .patch(fileController.updateFile)
   .delete(fileController.deleteFile);
-router.patch('/:id/trash', fileController.moveToTrash);
+
+router.patch('/trash/:id', fileController.moveToTrash);
+router.patch('/restore/:id', fileController.restoreFile);
 
 router.get('/download/:id', fileController.downloadFile);
 router.post('/email', fileController.emailFile);

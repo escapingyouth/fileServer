@@ -45,7 +45,7 @@ export default function AdminProfile() {
 	};
 
 	return (
-		<PageLayout isAdmin={true}>
+		<PageLayout>
 			<Container maxWidth='md' sx={{ py: 4 }}>
 				<Box sx={{ mb: 4 }}>
 					<Typography

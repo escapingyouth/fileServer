@@ -4,19 +4,18 @@ import NavigationMenu from '../NavigationMenu';
 
 import { Box, Toolbar } from '@mui/material';
 
-export default function PageLayout({ isAdmin, children }) {
+export default function PageLayout({ children }) {
 	const drawerWidth = 240;
 
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<NavigationMenu isAdmin={isAdmin} />
+			<NavigationMenu />
 
 			<Box
 				component='main'
 				sx={{
 					flexGrow: 1,
 					p: 3,
-					// height:''
 					width: { sm: `calc(100% - ${drawerWidth}px)` }
 				}}
 			>
@@ -28,6 +27,5 @@ export default function PageLayout({ isAdmin, children }) {
 }
 
 PageLayout.propTypes = {
-	isAdmin: PropTypes.bool,
 	children: PropTypes.node
 };

@@ -92,7 +92,13 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  const filePath = file.path;
+  const filePath = path.join(
+    __dirname,
+    '..',
+    'public',
+    'uploads',
+    file.filename,
+  );
 
   if (!fs.existsSync(filePath)) {
     return next(new AppError('File does not exist on the server', 404));
@@ -139,7 +145,7 @@ exports.emailFile = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'Email sent successfully',
+      message: 'Email sent successfully!',
     });
   } catch (error) {
     return next(
@@ -169,6 +175,21 @@ exports.moveToTrash = catchAsync(async (req, res, next) => {
   const file = await File.findByIdAndUpdate(
     req.params.id,
     { isTrashed: true },
+    { new: true },
+  );
+  if (!file) return next(new AppError('No file found with that ID', 404));
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      file,
+    },
+  });
+});
+exports.restoreFile = catchAsync(async (req, res, next) => {
+  const file = await File.findByIdAndUpdate(
+    req.params.id,
+    { isTrashed: false },
     { new: true },
   );
   if (!file) return next(new AppError('No file found with that ID', 404));

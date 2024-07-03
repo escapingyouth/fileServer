@@ -118,17 +118,19 @@ export default function UserFileTable() {
 				const files = res.data.data.files;
 
 				setFiles(
-					files.map((file) => ({
-						id: file._id,
-						filename: file.title,
-						originalname: file.originalname,
-						size: file.size,
-						dateModified: formatDate(file.uploadedAt),
-						fileType: getFileIcon(file.mimetype),
-						description: file.description,
-						isFavorite: file.isFavorite,
-						mimetype: file.mimetype
-					}))
+					files
+						.filter((file) => !file.isTrashed)
+						.map((file) => ({
+							id: file._id,
+							filename: file.title,
+							originalname: file.originalname,
+							size: file.size,
+							dateModified: formatDate(file.uploadedAt),
+							fileType: getFileIcon(file.mimetype),
+							description: file.description,
+							isFavorite: file.isFavorite,
+							mimetype: file.mimetype
+						}))
 				);
 			} catch (error) {
 				console.log(error);
