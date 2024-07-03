@@ -3,17 +3,7 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 
-console.log(process.env.NODE_ENV);
-
 const router = express.Router();
-
-router.get('/', userController.getAllUsers);
-
-router
-  .route('/:id')
-  .get(userController.getUser)
-  .patch(userController.updateUser)
-  .delete(userController.deleteUser);
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
@@ -33,5 +23,14 @@ router.patch(
   userController.updateMe,
 );
 router.delete('/deleteMe', userController.deleteMe);
+
+router.use(authController.restrictTo('admin'));
+router.route('/').get(userController.getAllUsers);
+
+router
+  .route('/:id')
+  .get(userController.getUser)
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 module.exports = router;
