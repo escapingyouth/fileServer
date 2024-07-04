@@ -13,7 +13,7 @@ module.exports = class Email {
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === 'production ') {
+    if (process.env.NODE_ENV === 'production') {
       return nodemailer.createTransport({
         service: 'gmail',
         host: process.env.GMAIL_HOST,
@@ -50,17 +50,16 @@ module.exports = class Email {
       subject,
       html,
       text: htmlToText.convert(html),
-      attachments: this.options.file
-        ? [
-            {
-              filename: this.options.file.originalname,
-              content: this.options.file.buffer,
-              contentType: this.options.file.mimetype,
-              path: this.options.file.path,
-              encoding: this.options.file.encoding,
-            },
-          ]
-        : [],
+      // attachments: this.options.file
+      //   ? [
+      //       {
+      //         filename: this.options.file.originalname,
+      //         contentType: this.options.file.mimetype,
+      //         path: this.options.file.path,
+      //         encoding: this.options.file.encoding,
+      //       },
+      //     ]
+      //   : [],
     };
 
     await this.newTransport().sendMail(mailOptions);

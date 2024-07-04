@@ -1,4 +1,5 @@
 import { useFile } from '../../contexts/FileContext';
+import axios from 'axios';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -7,7 +8,9 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FavoriteStar from './FavoriteStar';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Box } from '@mui/material';
+import { Box, Link } from '@mui/material';
+
+const url = import.meta.env.VITE_SERVER_URL;
 
 const columns = (handleDownload) => [
 	{
@@ -53,14 +56,17 @@ const columns = (handleDownload) => [
 		headerName: 'Download',
 		width: 100,
 		renderCell: (params) => (
-			<DownloadIcon
-				color='info'
-				style={{ cursor: 'pointer' }}
-				onClick={async () =>
-					await handleDownload(params.row.id, params.row.originalname)
-				}
-			/>
+			<Link href={`${url}/api/files/download/${params.row.id}`} target='_blank'>
+				Download
+			</Link>
 		)
+		// <DownloadIcon
+		// 	color='info'
+		// 	style={{ cursor: 'pointer' }}
+		// 	onClick={async () =>
+		// 		await handleDownload(params.row.id, params.row.originalname)
+		// 	}
+		// />
 	}
 ];
 
@@ -100,7 +106,7 @@ const getFileIcon = (mimetype) => {
 };
 
 export default function UserFileTable() {
-	const { files, downloadFile, loading } = useFile();
+	const { files, loading } = useFile();
 	const { showSnackbar } = useSnackbar();
 
 	const mappedFiles = files
@@ -118,18 +124,23 @@ export default function UserFileTable() {
 		}));
 
 	const handleDownload = async (fileId, fileName) => {
-		const response = await downloadFile(fileId);
+		try {
+			const response = await axios.get(`${url}/api/files/download/${fileId}`, {
+				responseType: 'blob'
+			});
 
-		const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
-
-		const link = document.createElement('a');
-		link.href = downloadUrl;
-		link.setAttribute('download', fileName);
-		document.body.appendChild(link);
-		link.click();
-		link.parentNode.removeChild(link);
-
-		showSnackbar('File successfully downloaded!');
+			const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+			const link = document.createElement('a');
+			link.href = downloadUrl;
+			link.setAttribute('download', fileName);
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			showSnackbar('File successfully downloaded!');
+		} catch (error) {
+			console.log(error);
+			// console.error('Error downloading the file:', error);
+		}
 	};
 
 	return (

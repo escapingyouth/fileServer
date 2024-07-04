@@ -59,18 +59,6 @@ export const FileProvider = ({ children }) => {
 		}
 	};
 
-	const downloadFile = async (id) => {
-		try {
-			const response = await axios.get(`${url}/api/files/download/${id}`, {
-				responseType: 'blob'
-			});
-			return response;
-		} catch (error) {
-			console.log(error);
-			showSnackbar(error.response.data.message, 'error');
-		}
-	};
-
 	const moveToTrash = async (id) => {
 		try {
 			await axios.patch(`${url}/api/files/trash/${id}`, {});
@@ -166,9 +154,7 @@ export const FileProvider = ({ children }) => {
 	const getFileStats = async () => {
 		try {
 			setLoading(true);
-			const { data } = await axios.get(`${url}/api/files/stats`, {
-				withCredentials: true
-			});
+			const { data } = await axios.get(`${url}/api/files/stats`);
 			return data.data.stats;
 		} catch (error) {
 			showSnackbar(error.response.data.message, 'error');
@@ -183,7 +169,6 @@ export const FileProvider = ({ children }) => {
 				files,
 				getFile,
 				uploadFile,
-				downloadFile,
 				moveToTrash,
 				restoreFile,
 				favoriteFile,

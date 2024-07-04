@@ -95,17 +95,9 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  // const filePath = path.join(
-  //   __dirname,
-  //   '..',
-  //   'public',
-  //   'uploads',
-  //   file.filename,
-  // );
-
   const filePath = `https://fileserver.up.railway.app/uploads/${file.filename}`;
 
-  if (!fs.existsSync(filePath)) {
+  if (!filePath) {
     return next(new AppError('File does not exist on the server', 404));
   }
 
@@ -140,10 +132,13 @@ exports.emailFile = catchAsync(async (req, res, next) => {
 
     const options = {
       message,
-      file,
     };
 
-    await new Email({ email: recipient }, url, options).sendFile(subject);
+    await new Email(
+      { email: recipient, name: 'sir/madam' },
+      url,
+      options,
+    ).sendFile(subject);
 
     file.emailsSent += 1;
     await file.save();
