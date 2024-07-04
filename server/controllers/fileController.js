@@ -18,9 +18,12 @@ const multerStorage = multer.diskStorage({
   },
 });
 const checkFileType = (file, cb) => {
-  const filetypes = /jpeg|jpg|png|gif|webp|svg|ppt|pptx|xls|xlsx|pdf|doc|docx/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+  const fileExts = /jpeg|jpg|png|gif|webp|svg|ppt|pptx|xls|xlsx|pdf|doc|docx/;
+  const mimeTypes =
+    /image\/jpeg|image\/jpg|image\/png|image\/gif|image\/webp|image\/svg\+xml|application\/vnd\.ms-powerpoint|application\/vnd\.openxmlformats-officedocument\.presentationml\.presentation|application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet|application\/pdf|application\/msword|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document/;
+
+  const extname = fileExts.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = mimeTypes.test(file.mimetype);
 
   if (mimetype && extname) {
     cb(null, true);
@@ -92,13 +95,15 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  const filePath = path.join(
-    __dirname,
-    '..',
-    'public',
-    'uploads',
-    file.filename,
-  );
+  // const filePath = path.join(
+  //   __dirname,
+  //   '..',
+  //   'public',
+  //   'uploads',
+  //   file.filename,
+  // );
+
+  const filePath = `https://fileserver.up.railway.app/uploads/${file.filename}`;
 
   if (!fs.existsSync(filePath)) {
     return next(new AppError('File does not exist on the server', 404));
@@ -210,5 +215,37 @@ exports.deleteFile = catchAsync(async (req, res, next) => {
   res.status(204).json({
     status: 'success',
     data: null,
+  });
+});
+
+exports.getFileStats = catchAsync(async (req, res, next) => {
+  const totalFiles = await File.countDocuments();
+
+  const totalDownloads = await File.aggregate([
+    { $group: { _id: null, totalDownloads: { $sum: '$downloads' } } },
+  ]);
+
+  const averageFileSize = await File.aggregate([
+    { $group: { _id: null, averageSize: { $avg: '$size' } } },
+  ]);
+
+  const mostDownloadedFile = await File.findOne().sort('-downloads');
+
+  const favoriteFilesCount = await File.countDocuments({ isFavorite: true });
+
+  const recentFiles = await File.find().sort({ uploadedAt: -1 });
+
+  const stats = {
+    totalFiles,
+    totalDownloads: totalDownloads[0]?.totalDownloads || 0,
+    averageFileSize: averageFileSize[0]?.averageSize || 0,
+    mostDownloadedFile,
+    favoriteFilesCount,
+    recentFiles,
+  };
+
+  res.status(200).json({
+    status: 'success',
+    data: { stats },
   });
 });

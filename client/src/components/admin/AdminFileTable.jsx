@@ -1,17 +1,13 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import ActionMenu from './ActionMenu';
-import { useSnackbar } from '../../contexts/SnackbarContext';
+import { useFile } from '../../contexts/FileContext';
 import { Box } from '@mui/material';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
-const columns = (handleDeleteFile, handleMoveToTrash) => [
+const columns = [
 	{
 		field: 'filename',
 		headerName: 'File name',
@@ -20,7 +16,7 @@ const columns = (handleDeleteFile, handleMoveToTrash) => [
 	{
 		field: 'description',
 		headerName: 'Description',
-		width: 250
+		width: 300
 	},
 	{
 		field: 'dateModified',
@@ -46,13 +42,7 @@ const columns = (handleDeleteFile, handleMoveToTrash) => [
 		field: 'action',
 		headerName: 'Action',
 		width: 150,
-		renderCell: (params) => (
-			<ActionMenu
-				fileId={params.row.id}
-				onMoveToTrash={handleMoveToTrash}
-				onDelete={handleDeleteFile}
-			/>
-		)
+		renderCell: (params) => <ActionMenu fileId={params.row.id} />
 	}
 ];
 
@@ -93,77 +83,25 @@ const getFileIcon = (mimetype) => {
 };
 
 export default function AdminFileTable() {
-	const [files, setFiles] = useState([]);
-	const [loading, setIsLoading] = useState(false);
-	const { showSnackbar } = useSnackbar();
+	const { files, loading } = useFile();
 
-	useEffect(() => {
-		async function fetchFiles() {
-			try {
-				setIsLoading(true);
-
-				const res = await axios.get(`${url}/api/files`);
-				const files = res.data.data.files;
-
-				setFiles(
-					files
-						.filter((file) => !file.isTrashed)
-						.map((file) => ({
-							id: file._id,
-							filename: file.title,
-							size: file.size,
-							dateModified: formatDate(file.uploadedAt),
-							fileType: getFileIcon(file.mimetype),
-							description: file.description
-						}))
-				);
-			} catch (error) {
-				console.log(error);
-				showSnackbar(`${error.message}. Try refreshing the page`, 'error');
-			} finally {
-				setIsLoading(false);
-			}
-		}
-		fetchFiles();
-	}, []);
-
-	const handleMoveToTrash = async (fileId) => {
-		try {
-			axios
-				.patch(`${url}/api/files/trash/${fileId}`)
-				.then(() => {
-					showSnackbar('File moved to trash successfully!', 'warning');
-					setFiles(files.filter((file) => file.id !== fileId));
-				})
-				.catch((error) => {
-					showSnackbar(error.message, 'error');
-				});
-		} catch (error) {
-			console.log(error);
-			showSnackbar(error.message, 'error');
-		}
-	};
-
-	const handleDeleteFile = async (fileId) => {
-		try {
-			await axios.delete(`${url}/api/files/${fileId}`);
-
-			setFiles(files.filter((file) => file.id !== fileId));
-
-			showSnackbar('File deleted successfully!');
-		} catch (error) {
-			console.log(error);
-
-			showSnackbar(error.message, 'error');
-		}
-	};
+	const mappedFiles = files
+		.filter((file) => !file.isTrashed)
+		.map((file) => ({
+			id: file._id,
+			filename: file.title,
+			size: file.size,
+			dateModified: formatDate(file.uploadedAt),
+			fileType: getFileIcon(file.mimetype),
+			description: file.description
+		}));
 
 	return (
 		<>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid
-					rows={files}
-					columns={columns(handleDeleteFile, handleMoveToTrash)}
+					rows={mappedFiles}
+					columns={columns}
 					initialState={{
 						pagination: {
 							paginationModel: { page: 0, pageSize: 5 }

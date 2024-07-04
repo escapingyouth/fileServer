@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useFile } from '../../contexts/FileContext';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
@@ -8,9 +9,11 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const ITEM_HEIGHT = 48;
 
-export default function ActionMenu({ fileId, onMoveToTrash, onDelete }) {
+export default function ActionMenu({ fileId }) {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
+
+	const { moveToTrash, deleteFile } = useFile();
 	const navigate = useNavigate();
 
 	const handleClick = (event) => {
@@ -26,12 +29,12 @@ export default function ActionMenu({ fileId, onMoveToTrash, onDelete }) {
 		handleClose();
 	};
 
-	const handleDelete = () => {
-		onDelete(fileId);
+	const handleDelete = async () => {
+		await deleteFile(fileId);
 		handleClose();
 	};
-	const handleMoveToTrash = () => {
-		onMoveToTrash(fileId);
+	const handleMoveToTrash = async () => {
+		await moveToTrash(fileId);
 		handleClose();
 	};
 
@@ -67,7 +70,5 @@ export default function ActionMenu({ fileId, onMoveToTrash, onDelete }) {
 }
 
 ActionMenu.propTypes = {
-	fileId: PropTypes.string,
-	onMoveToTrash: PropTypes.func,
-	onDelete: PropTypes.func
+	fileId: PropTypes.string
 };

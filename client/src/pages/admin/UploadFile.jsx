@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useFile } from '../../contexts/FileContext';
 import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
 export default function UploadFile() {
-	const [loading, setIsLoading] = useState(false);
-	const [submitted, setSubmitted] = useState(false);
+	const { uploadFile, loading, submitted, setSubmitted } = useFile();
+
 	const { showSnackbar } = useSnackbar();
 
 	const [formState, setFormState] = useState({
@@ -49,25 +47,7 @@ export default function UploadFile() {
 		formData.append('description', formState.description);
 		formData.append('file', formState.uploadedFile);
 
-		try {
-			setIsLoading(true);
-
-			await axios.post(`${url}/api/files`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				}
-			});
-
-			showSnackbar('File uploaded successfully!', 'success');
-
-			setSubmitted(false);
-		} catch (error) {
-			console.log(error);
-			showSnackbar(error.response.data.message, 'error');
-			showSnackbar(error.message, 'error');
-		} finally {
-			setIsLoading(false);
-		}
+		await uploadFile(formData);
 	};
 
 	return (

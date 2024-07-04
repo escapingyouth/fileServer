@@ -9,6 +9,8 @@ router
   .get(fileController.getAllFiles)
   .post(fileController.uploadFileMulter, fileController.uploadFile);
 
+router.get('/stats', fileController.getFileStats);
+
 router
   .route('/:id')
   .get(fileController.getFile)

@@ -6,6 +6,7 @@ import { ThemeProvider } from '@emotion/react';
 import theme from './utils/theme.js';
 import { SnackbarProvider } from './contexts/SnackbarContext.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import { FileProvider } from './contexts/FileContext.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 			<BrowserRouter>
 				<SnackbarProvider>
 					<AuthProvider>
-						<App />
+						<FileProvider>
+							<App />
+						</FileProvider>
 					</AuthProvider>
 				</SnackbarProvider>
 			</BrowserRouter>

@@ -1,14 +1,10 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { useSnackbar } from '../../contexts/SnackbarContext';
+import { useFile } from '../../contexts/FileContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { Box } from '@mui/material';
-
-const url = import.meta.env.VITE_SERVER_URL;
 
 const columns = [
 	{
@@ -77,45 +73,24 @@ const getFileIcon = (mimetype) => {
 };
 
 export default function FavoriteFileTable() {
-	const [files, setFiles] = useState([]);
-	const [loading, setIsLoading] = useState(false);
-	const { showSnackbar } = useSnackbar();
+	const { files, loading } = useFile();
 
-	useEffect(() => {
-		async function fetchFiles() {
-			try {
-				setIsLoading(true);
-
-				const res = await axios.get(`${url}/api/files`);
-				const files = res.data.data.files;
-
-				setFiles(
-					files
-						.filter((file) => file.isFavorite)
-						.map((file) => ({
-							id: file._id,
-							filename: file.title,
-							size: file.size,
-							dateModified: formatDate(file.uploadedAt),
-							fileType: getFileIcon(file.mimetype),
-							description: file.description,
-							isFavorite: file.isFavorite
-						}))
-				);
-			} catch (error) {
-				console.log(error);
-				showSnackbar(error.message, 'error');
-			} finally {
-				setIsLoading(false);
-			}
-		}
-		fetchFiles();
-	}, []);
+	const favoriteFiles = files
+		.filter((file) => file.isFavorite)
+		.map((file) => ({
+			id: file._id,
+			filename: file.title,
+			size: file.size,
+			dateModified: formatDate(file.uploadedAt),
+			fileType: getFileIcon(file.mimetype),
+			description: file.description,
+			isFavorite: file.isFavorite
+		}));
 
 	return (
 		<Box sx={{ height: '400px', width: '100%' }}>
 			<DataGrid
-				rows={files}
+				rows={favoriteFiles}
 				columns={columns}
 				initialState={{
 					pagination: {

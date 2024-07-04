@@ -1,30 +1,18 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useFile } from '../../contexts/FileContext';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import IconButton from '@mui/material/IconButton';
 import { Tooltip } from '@mui/material';
-import { useSnackbar } from '../../contexts/SnackbarContext';
 import PropTypes from 'prop-types';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
-export default function FavoriteStar({ fileId, isFavorite, onFavoriteChange }) {
-	const { showSnackbar } = useSnackbar();
+export default function FavoriteStar({ fileId, isFavorite }) {
 	const [favorite, setFavorite] = useState(isFavorite);
+	const { favoriteFile } = useFile();
 
 	const handleToggleFavorite = async () => {
-		try {
-			await axios.patch(`${url}/api/files/${fileId}`, {
-				isFavorite: !favorite
-			});
-			setFavorite(!favorite);
-			onFavoriteChange(fileId, !favorite);
-			showSnackbar('Added to favourites!', 'info');
-		} catch (error) {
-			console.log(error);
-			showSnackbar(error.message, 'error');
-		}
+		await favoriteFile(fileId, !favorite);
+		setFavorite(!favorite);
 	};
 
 	return (
@@ -38,6 +26,5 @@ export default function FavoriteStar({ fileId, isFavorite, onFavoriteChange }) {
 
 FavoriteStar.propTypes = {
 	fileId: PropTypes.string,
-	isFavorite: PropTypes.bool,
-	onFavoriteChange: PropTypes.func
+	isFavorite: PropTypes.bool
 };

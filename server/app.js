@@ -28,13 +28,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-const limiter = rateLimit({
-  limit: 200,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP. Please try again in an hour',
-});
+// In case we want to limit no of requests
+// const limiter = rateLimit({
+//   limit: 300,
+//   windowMs: 60 * 60 * 1000,
+//   message: 'Too many requests from this IP. Please try again in an hour',
+// });
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 const allowedOrigins = [
   'http://localhost:5173',

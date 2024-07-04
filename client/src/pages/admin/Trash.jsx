@@ -1,17 +1,13 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useFile } from '../../contexts/FileContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { Box, Typography, Tooltip, IconButton } from '@mui/material';
-import { useSnackbar } from '../../contexts/SnackbarContext';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import RestorePageIcon from '@mui/icons-material/RestorePage';
 import PageLayout from '../../components/layouts/PageLayout';
-
-const url = import.meta.env.VITE_SERVER_URL;
 
 const columns = (handleDeleteFile, handleRestoreFile) => [
 	{
@@ -49,7 +45,7 @@ const columns = (handleDeleteFile, handleRestoreFile) => [
 		width: 120,
 		renderCell: (params) => (
 			<Tooltip title='Delete'>
-				<IconButton onClick={() => handleDeleteFile(params.row.id)}>
+				<IconButton onClick={async () => await handleDeleteFile(params.row.id)}>
 					<DeleteForeverIcon color='error' />
 				</IconButton>
 			</Tooltip>
@@ -63,7 +59,7 @@ const columns = (handleDeleteFile, handleRestoreFile) => [
 			<Tooltip title='Restore'>
 				<IconButton>
 					<RestorePageIcon
-						onClick={() => handleRestoreFile(params.row.id)}
+						onClick={async () => await handleRestoreFile(params.row.id)}
 						color='warning'
 					/>
 				</IconButton>
@@ -108,56 +104,25 @@ const getFileIcon = (mimetype) => {
 };
 
 export default function TrashPage() {
-	const [files, setFiles] = useState([]);
-	const [loading, setIsLoading] = useState(false);
-	const { showSnackbar } = useSnackbar();
+	const { files, restoreFile, deleteFile, loading } = useFile();
 
-	useEffect(() => {
-		async function fetchFiles() {
-			try {
-				setIsLoading(true);
-				const res = await axios.get(`${url}/api/files`);
-				const files = res.data.data.files;
-
-				setFiles(
-					files
-						.filter((file) => file.isTrashed)
-						.map((file) => ({
-							id: file._id,
-							filename: file.title,
-							size: file.size,
-							dateModified: formatDate(file.uploadedAt),
-							fileType: getFileIcon(file.mimetype),
-							description: file.description
-						}))
-				);
-			} catch (error) {
-				showSnackbar(error.message, 'error');
-			} finally {
-				setIsLoading(false);
-			}
-		}
-		fetchFiles();
-	}, [showSnackbar]);
+	const trashedFiles = files
+		.filter((file) => file.isTrashed)
+		.map((file) => ({
+			id: file._id,
+			filename: file.title,
+			size: file.size,
+			dateModified: formatDate(file.uploadedAt),
+			fileType: getFileIcon(file.mimetype),
+			description: file.description
+		}));
 
 	const handleDeleteFile = async (fileId) => {
-		try {
-			await axios.delete(`${url}/api/files/${fileId}`);
-			setFiles(files.filter((file) => file.id !== fileId));
-			showSnackbar('File deleted successfully!');
-		} catch (error) {
-			showSnackbar(error.message, 'error');
-		}
+		await deleteFile(fileId);
 	};
 
 	const handleRestoreFile = async (fileId) => {
-		try {
-			await axios.patch(`${url}/api/files/restore/${fileId}`);
-			setFiles(files.filter((file) => file.id !== fileId));
-			showSnackbar('File restored successfully!');
-		} catch (error) {
-			showSnackbar(error.message, 'error');
-		}
+		await restoreFile(fileId);
 	};
 
 	return (
@@ -167,7 +132,7 @@ export default function TrashPage() {
 			</Typography>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid
-					rows={files}
+					rows={trashedFiles}
 					columns={columns(handleDeleteFile, handleRestoreFile)}
 					initialState={{
 						pagination: {

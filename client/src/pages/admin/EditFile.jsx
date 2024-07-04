@@ -1,34 +1,25 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useFile } from '../../contexts/FileContext';
 import { useSnackbar } from '../../contexts/SnackbarContext';
-import axios from 'axios';
 import PageLayout from '../../components/layouts/PageLayout';
 import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
 export default function EditFile() {
 	const { id } = useParams();
-	const navigate = useNavigate();
+
+	const { getFile, updateFile, loading, submitted, setSubmitted } = useFile();
 	const { showSnackbar } = useSnackbar();
 
 	const [file, setFile] = useState({ title: '', description: '' });
-	const [loading, setIsLoading] = useState(false);
-
-	const [submitted, setSubmitted] = useState(false);
+	console.log(file);
 
 	useEffect(() => {
 		async function fetchFile() {
-			try {
-				const response = await axios.get(`${url}/api/files/${id}`);
-				setFile(response.data.data.file);
-			} catch (error) {
-				console.error(error);
-				showSnackbar(error.message, 'error');
-			}
+			setFile(await getFile(id));
 		}
 		fetchFile();
-	}, [id, showSnackbar]);
+	}, [id]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -43,20 +34,7 @@ export default function EditFile() {
 			showSnackbar('Please fill out all required fields.', 'error');
 			return;
 		}
-		try {
-			setIsLoading(true);
-
-			await axios.patch(`${url}/api/files/${id}`, file);
-
-			showSnackbar('File edited successfully!', 'info');
-			setSubmitted(false);
-			navigate('/admin/files');
-		} catch (error) {
-			console.error(error);
-			showSnackbar(error.message, 'error');
-		} finally {
-			setIsLoading(false);
-		}
+		await updateFile(id, file);
 	};
 
 	return (
