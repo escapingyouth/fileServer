@@ -1,50 +1,51 @@
+import PropTypes from 'prop-types';
 import { Typography, Paper, Box } from '@mui/material';
 
-const DashboardCard = ({ title, value, percentage, description, positive }) => {
+const DashboardCard = ({ icon, title, value, description, color }) => {
 	return (
 		<Paper
-			elevation={3}
+			elevation={2}
 			sx={{
 				px: 2,
 				py: 3,
 				display: 'flex',
 				alignItems: 'center',
-				minWidth: 250
+				minWidth: 250,
+				backgroundColor: color,
+				color: '#fff',
+				'&:hover': {
+					opacity: 0.9
+				}
 			}}
 		>
 			<Box>
-				<Typography
-					variant='body1'
-					component='h2'
-					sx={{
-						color: '#8c8c8c'
-					}}
-				>
-					{title}
-				</Typography>
 				<Box
 					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						gap: '1rem'
+						mb: '1rem'
 					}}
 				>
-					<Typography variant='h6' sx={{ marginY: 1 }}>
-						{value}
-					</Typography>
-					<Typography
-						variant='subtitle1'
-						color={positive ? 'primary' : 'error'}
-					>
-						{positive ? '▲' : '▼'} {percentage}
-					</Typography>
+					{icon}
 				</Box>
-				<Typography variant='body2' color='textSecondary'>
-					{description}
+				<Typography variant='h6' component='h2'>
+					{title}
 				</Typography>
+
+				<Typography variant='h6' sx={{ marginY: 1 }}>
+					{value}
+				</Typography>
+
+				<Typography variant='body2'>{description}</Typography>
 			</Box>
 		</Paper>
 	);
+};
+
+DashboardCard.propTypes = {
+	icon: PropTypes.element,
+	title: PropTypes.string,
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	description: PropTypes.string,
+	color: PropTypes.string
 };
 
 export default DashboardCard;

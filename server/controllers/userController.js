@@ -131,3 +131,18 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.getUserStats = catchAsync(async (req, res, next) => {
+  const totalUsers = await User.countDocuments();
+  const activeUsers = await User.countDocuments({ active: true });
+
+  const stats = {
+    totalUsers,
+    activeUsers,
+  };
+
+  res.status(200).json({
+    status: 'success',
+    data: { stats },
+  });
+});

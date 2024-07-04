@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
+	const [userStats, setUserStats] = useState({});
 
 	const navigate = useNavigate();
 
@@ -29,6 +30,21 @@ export const AuthProvider = ({ children }) => {
 			setLoading(false);
 		};
 		checkAuth();
+	}, []);
+
+	useEffect(() => {
+		const fetchUserStats = async () => {
+			setLoading(true);
+			try {
+				const { data } = await axios.get(`${url}/api/users/stats`);
+				setUserStats(data.data.stats);
+			} catch (error) {
+				showSnackbar(error.response.data.message, 'error');
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchUserStats();
 	}, []);
 
 	const login = async (email, password) => {
@@ -221,6 +237,7 @@ export const AuthProvider = ({ children }) => {
 				updateMe,
 				updateMyPassword,
 				deleteMe,
+				userStats,
 				loading,
 				submitted,
 				setSubmitted

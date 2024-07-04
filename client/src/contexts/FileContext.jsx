@@ -12,6 +12,7 @@ export const FileProvider = ({ children }) => {
 	const [files, setFiles] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
+	const [fileStats, setFileStats] = useState({});
 
 	const { showSnackbar } = useSnackbar();
 	const navigate = useNavigate();
@@ -29,6 +30,22 @@ export const FileProvider = ({ children }) => {
 			}
 		};
 		fetchFiles();
+	}, []);
+
+	useEffect(() => {
+		const fetchFileStats = async () => {
+			setLoading(true);
+			try {
+				const { data } = await axios.get(`${url}/api/files/stats`);
+
+				setFileStats(data.data.stats);
+			} catch (error) {
+				showSnackbar(error.response.data.message, 'error');
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchFileStats();
 	}, []);
 
 	const getFile = async (id) => {
@@ -151,18 +168,6 @@ export const FileProvider = ({ children }) => {
 		}
 	};
 
-	const getFileStats = async () => {
-		try {
-			setLoading(true);
-			const { data } = await axios.get(`${url}/api/files/stats`);
-			return data.data.stats;
-		} catch (error) {
-			showSnackbar(error.response.data.message, 'error');
-		} finally {
-			setLoading(false);
-		}
-	};
-
 	return (
 		<FileContext.Provider
 			value={{
@@ -175,7 +180,7 @@ export const FileProvider = ({ children }) => {
 				deleteFile,
 				updateFile,
 				emailFile,
-				getFileStats,
+				fileStats,
 				loading,
 				submitted,
 				setSubmitted

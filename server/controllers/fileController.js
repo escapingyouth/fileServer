@@ -128,7 +128,7 @@ exports.emailFile = catchAsync(async (req, res, next) => {
   if (!file) return next(new AppError('File not found', 404));
 
   try {
-    const url = `${req.protocol}://${req.get('host')}/api/files/download/${fileId}`;
+    const url = `https://fileserver.up.railway.app/uploads/${file.filename}`;
 
     const options = {
       message,
@@ -230,6 +230,20 @@ exports.getFileStats = catchAsync(async (req, res, next) => {
 
   const recentFiles = await File.find().sort({ uploadedAt: -1 });
 
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const uploadsOverTime = await File.aggregate([
+    { $match: { uploadedAt: { $gte: oneWeekAgo } } },
+    {
+      $group: {
+        _id: { $dayOfWeek: '$uploadedAt' },
+        count: { $sum: 1 },
+      },
+    },
+    { $sort: { _id: 1 } },
+  ]);
+
   const stats = {
     totalFiles,
     totalDownloads: totalDownloads[0]?.totalDownloads || 0,
@@ -237,6 +251,7 @@ exports.getFileStats = catchAsync(async (req, res, next) => {
     mostDownloadedFile,
     favoriteFilesCount,
     recentFiles,
+    uploadsOverTime,
   };
 
   res.status(200).json({
