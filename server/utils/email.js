@@ -15,11 +15,11 @@ module.exports = class Email {
   newTransport() {
     if (process.env.NODE_ENV === 'production ') {
       return nodemailer.createTransport({
-        host: 'smtp.resend.com',
-        secure: true,
+        service: 'gmail',
+        host: process.env.GMAIL_HOST,
         auth: {
-          user: 'resend',
-          pass: process.env.RESEND_API_KEY,
+          user: process.env.GMAIL_USERNAME,
+          pass: process.env.GMAIL_PASSWORD,
         },
       });
     }

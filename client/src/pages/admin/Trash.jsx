@@ -128,7 +128,7 @@ export default function TrashPage() {
 	return (
 		<PageLayout>
 			<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
-				All Files
+				Recycled Files
 			</Typography>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid

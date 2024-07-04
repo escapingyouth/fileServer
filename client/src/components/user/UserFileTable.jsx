@@ -1,4 +1,5 @@
 import { useFile } from '../../contexts/FileContext';
+import { useSnackbar } from '../../contexts/SnackbarContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
@@ -100,6 +101,7 @@ const getFileIcon = (mimetype) => {
 
 export default function UserFileTable() {
 	const { files, downloadFile, loading } = useFile();
+	const { showSnackbar } = useSnackbar();
 
 	const mappedFiles = files
 		.filter((file) => !file.isTrashed)
@@ -116,7 +118,18 @@ export default function UserFileTable() {
 		}));
 
 	const handleDownload = async (fileId, fileName) => {
-		await downloadFile(fileId, fileName);
+		const response = await downloadFile(fileId);
+
+		const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
+
+		const link = document.createElement('a');
+		link.href = downloadUrl;
+		link.setAttribute('download', fileName);
+		document.body.appendChild(link);
+		link.click();
+		link.parentNode.removeChild(link);
+
+		showSnackbar('File successfully downloaded!');
 	};
 
 	return (

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import { useFile } from '../../contexts/FileContext';
 import {
 	Typography,
 	TextField,
@@ -12,33 +12,19 @@ import SendIcon from '@mui/icons-material/Send';
 import PageLayout from '../../components/layouts/PageLayout';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
 export default function EmailFile() {
-	const [loading, setIsLoading] = useState(false);
-	const [submitted, setSubmitted] = useState(false);
+	const { files, emailFile, loading, submitted, setSubmitted } = useFile();
+
+	const filteredFiles = files.filter((file) => !file.isTrashed);
+
 	const { showSnackbar } = useSnackbar();
-	const [files, setFiles] = useState([]);
+
 	const [formState, setFormState] = useState({
 		recipient: '',
 		subject: '',
 		message: '',
 		selectedFileId: ''
 	});
-
-	useEffect(() => {
-		const fetchFiles = async () => {
-			try {
-				const res = await axios.get(`${url}/api/files`);
-				const files = res.data.data.files;
-				setFiles(files);
-			} catch (error) {
-				showSnackbar('Error fetching files', 'error');
-			}
-		};
-
-		fetchFiles();
-	}, [showSnackbar]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -62,23 +48,12 @@ export default function EmailFile() {
 			return;
 		}
 
-		try {
-			setIsLoading(true);
-
-			await axios.post(`${url}/api/files/email`, {
-				recipient: formState.recipient,
-				subject: formState.subject,
-				message: formState.message,
-				fileId: formState.selectedFileId
-			});
-
-			showSnackbar('Email sent successfully!');
-			setSubmitted(false);
-		} catch (error) {
-			showSnackbar(error.message, 'error');
-		} finally {
-			setIsLoading(false);
-		}
+		await emailFile({
+			recipient: formState.recipient,
+			subject: formState.subject,
+			message: formState.message,
+			fileId: formState.selectedFileId
+		});
 	};
 
 	const ITEM_HEIGHT = 48;
@@ -159,7 +134,7 @@ export default function EmailFile() {
 					required
 					error={submitted && !formState.selectedFileId}
 				>
-					{files.map((file) => (
+					{filteredFiles.map((file) => (
 						<MenuItem key={file._id} value={file._id}>
 							{file.title}
 						</MenuItem>

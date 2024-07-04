@@ -59,33 +59,25 @@ export const FileProvider = ({ children }) => {
 		}
 	};
 
-	const downloadFile = async (id, fileName) => {
+	const downloadFile = async (id) => {
 		try {
 			const response = await axios.get(`${url}/api/files/download/${id}`, {
 				responseType: 'blob'
 			});
-			console.log(response);
-
-			const url = window.URL.createObjectURL(new Blob([response.data]));
-
-			const link = document.createElement('a');
-			link.href = url;
-			link.setAttribute('download', fileName);
-			document.body.appendChild(link);
-			link.click();
-			link.parentNode.removeChild(link);
-
-			showSnackbar('File successfully downloaded!');
+			return response;
 		} catch (error) {
 			console.log(error);
-			// showSnackbar(error.response.data.message, 'error');
+			showSnackbar(error.response.data.message, 'error');
 		}
 	};
 
 	const moveToTrash = async (id) => {
 		try {
 			await axios.patch(`${url}/api/files/trash/${id}`, {});
-			setFiles(files.filter((file) => file._id !== id));
+
+			setFiles((prevFiles) =>
+				prevFiles.filter((file) => file._id !== id && !file.isTrashed)
+			);
 			showSnackbar('File moved to trash successfully!', 'warning');
 		} catch (error) {
 			showSnackbar(error.response.data.message, 'error');
@@ -94,8 +86,14 @@ export const FileProvider = ({ children }) => {
 
 	const restoreFile = async (id) => {
 		try {
-			await axios.patch(`${url}/api/files/restore/${id}`, {});
-			setFiles(files.filter((file) => file._id !== id));
+			const { data } = await axios.patch(`${url}/api/files/restore/${id}`, {});
+
+			const restoredFile = data.data.file;
+
+			setFiles((prevFiles) => [
+				...prevFiles.filter((file) => file._id !== id),
+				restoredFile
+			]);
 			showSnackbar('File restored!');
 		} catch (error) {
 			showSnackbar(error.response.data.message, 'error');
@@ -115,7 +113,19 @@ export const FileProvider = ({ children }) => {
 	const updateFile = async (id, updateData) => {
 		try {
 			setLoading(true);
-			await axios.patch(`${url}/api/files/${id}`, updateData);
+			const { data } = await axios.patch(`${url}/api/files/${id}`, updateData);
+
+			const updatedFile = data.data.file;
+
+			setFiles((prevFiles) => {
+				const updatedFiles = prevFiles.map((file) => {
+					if (file._id === updatedFile._id) {
+						return updatedFile;
+					}
+					return file;
+				});
+				return updatedFiles;
+			});
 
 			showSnackbar('File updated successfully!', 'info');
 			setSubmitted(false);
@@ -144,9 +154,7 @@ export const FileProvider = ({ children }) => {
 	const emailFile = async (emailData) => {
 		try {
 			setLoading(true);
-			await axios.post(`${url}/api/files/email`, emailData, {
-				withCredentials: true
-			});
+			await axios.post(`${url}/api/files/email`, emailData);
 			showSnackbar('File emailed successfully!');
 		} catch (error) {
 			showSnackbar(error.response.data.message, 'error');
