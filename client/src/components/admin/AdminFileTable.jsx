@@ -24,9 +24,21 @@ const columns = [
 		width: 150
 	},
 	{
+		field: 'downloads',
+		headerName: 'Downloads',
+		width: 100,
+		type: 'number'
+	},
+	{
+		field: 'emailsSent',
+		headerName: 'Emails Sent',
+		width: 100,
+		type: 'number'
+	},
+	{
 		field: 'size',
 		headerName: 'Size',
-		width: 150,
+		width: 100,
 		type: 'number',
 		valueFormatter: (params) => formatFileSize(params)
 	},
@@ -41,7 +53,7 @@ const columns = [
 	{
 		field: 'action',
 		headerName: 'Action',
-		width: 150,
+		width: 100,
 		renderCell: (params) => <ActionMenu fileId={params.row.id} />
 	}
 ];
@@ -92,6 +104,8 @@ export default function AdminFileTable() {
 			filename: file.title,
 			size: file.size,
 			dateModified: formatDate(file.uploadedAt),
+			downloads: file.downloads,
+			emailsSent: file.emailsSent,
 			fileType: getFileIcon(file.mimetype),
 			description: file.description
 		}));

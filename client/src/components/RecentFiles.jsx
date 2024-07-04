@@ -1,22 +1,17 @@
-import { useFile } from '../../contexts/FileContext';
-import axios from 'axios';
-import { useSnackbar } from '../../contexts/SnackbarContext';
+import { useFile } from '../contexts/FileContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import FavoriteStar from './FavoriteStar';
-import DownloadIcon from '@mui/icons-material/Download';
-import { Box, Link } from '@mui/material';
 
-const url = import.meta.env.VITE_SERVER_URL;
+import { Box } from '@mui/material';
 
-const columns = (handleDownload) => [
+const columns = [
 	{
 		field: 'filename',
 		headerName: 'File name',
-		width: 150
+		width: 240
 	},
 	{
 		field: 'description',
@@ -31,7 +26,7 @@ const columns = (handleDownload) => [
 	{
 		field: 'size',
 		headerName: 'Size',
-		width: 100,
+		width: 150,
 		type: 'number',
 		valueFormatter: (params) => formatFileSize(params)
 	},
@@ -39,34 +34,8 @@ const columns = (handleDownload) => [
 	{
 		field: 'fileType',
 		headerName: 'File Type',
-		width: 100,
+		width: 150,
 		renderCell: (params) => params.value
-	},
-
-	{
-		field: 'favorite',
-		headerName: 'Favorite',
-		width: 100,
-		renderCell: (params) => (
-			<FavoriteStar fileId={params.row.id} isFavorite={params.row.isFavorite} />
-		)
-	},
-	{
-		field: 'download',
-		headerName: 'Download',
-		width: 100,
-		renderCell: (params) => (
-			<Link href={`${url}/api/files/download/${params.row.id}`} target='_blank'>
-				Download
-			</Link>
-		)
-		// <DownloadIcon
-		// 	color='info'
-		// 	style={{ cursor: 'pointer' }}
-		// 	onClick={async () =>
-		// 		await handleDownload(params.row.id, params.row.originalname)
-		// 	}
-		// />
 	}
 ];
 
@@ -105,48 +74,24 @@ const getFileIcon = (mimetype) => {
 	}
 };
 
-export default function UserFileTable() {
-	const { files, loading } = useFile();
-	const { showSnackbar } = useSnackbar();
+export default function RecentFiles() {
+	const { fileStats, loading } = useFile();
 
-	const mappedFiles = files
-		.filter((file) => !file.isTrashed)
-		.map((file) => ({
+	const recentFiles =
+		fileStats?.recentFiles?.map((file) => ({
 			id: file._id,
 			filename: file.title,
-			originalname: file.originalname,
 			size: file.size,
 			dateModified: formatDate(file.uploadedAt),
 			fileType: getFileIcon(file.mimetype),
-			description: file.description,
-			isFavorite: file.isFavorite
-		}));
-
-	const handleDownload = async (fileId, fileName) => {
-		try {
-			const response = await axios.get(`${url}/api/files/download/${fileId}`, {
-				responseType: 'blob'
-			});
-
-			const downloadUrl = window.URL.createObjectURL(new Blob([response.data]));
-			const link = document.createElement('a');
-			link.href = downloadUrl;
-			link.setAttribute('download', fileName);
-			document.body.appendChild(link);
-			link.click();
-			link.remove();
-			showSnackbar('File successfully downloaded!');
-		} catch (error) {
-			console.log(error);
-			// console.error('Error downloading the file:', error);
-		}
-	};
+			description: file.description
+		})) || [];
 
 	return (
 		<Box sx={{ height: '400px', width: '100%' }}>
 			<DataGrid
-				rows={mappedFiles}
-				columns={columns(handleDownload)}
+				rows={recentFiles}
+				columns={columns}
 				initialState={{
 					pagination: {
 						paginationModel: { page: 0, pageSize: 5 }
@@ -156,6 +101,7 @@ export default function UserFileTable() {
 				autoPageSize={true}
 				disableColumnResize={true}
 				disableRowSelectionOnClick={true}
+				disableColumnSorting={true}
 				disableColumnSelector={true}
 				disableColumnMenu={true}
 				loading={loading}

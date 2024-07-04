@@ -7,9 +7,10 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import Face2Icon from '@mui/icons-material/Face2';
 import DescriptionIcon from '@mui/icons-material/Description';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
-import { BarChart, LineChart } from '@mui/x-charts';
+import { BarChart } from '@mui/x-charts';
+import RecentFiles from '../../components/RecentFiles';
 
-const Dashboard = () => {
+const AdminDashboard = () => {
 	const { fileStats } = useFile();
 	const { userStats } = useAuth();
 
@@ -21,31 +22,44 @@ const Dashboard = () => {
 		xAxis: [
 			{
 				id: 'categories',
-				data: ['Total Files', 'Favorite Files', 'Total Downloads'],
+				data: [
+					'Total Users',
+					'Active Users',
+					'Total Files',
+					'Total Downloads',
+					'Average File Size'
+				],
 				scaleType: 'band'
 			}
 		],
 		series: [
 			{
 				data: [
+					userStats.totalUsers,
+					userStats.activeUsers,
 					fileStats.totalFiles,
-					fileStats.favoriteFilesCount,
-					fileStats.totalDownloads
+					fileStats.totalDownloads,
+					(fileStats.averageFileSize / 1048576).toFixed(2)
 				]
 			}
 		],
-		colors: ['#FF7EAD']
+		colors: ['#20c997']
 	};
-
-	const lineXAxisData = fileStats.uploadsOverTime.map((item) => item._id);
-	const lineSeriesData = fileStats.uploadsOverTime.map((item) => item.count);
 
 	return (
 		<PageLayout>
 			<Typography component='h2' variant='h6' sx={{ mb: '1rem' }}>
 				Admin Dashboard
 			</Typography>
-			<Box sx={{ flexGrow: 1 }}>
+			<Box
+				sx={{
+					flexGrow: 1,
+					p: 4,
+					backgroundColor: '#fff',
+					border: '0.92px solid #EFF0F6',
+					borderRadius: '10px'
+				}}
+			>
 				<Grid container spacing={2}>
 					<Grid item xs={12} lg={6} xl={3}>
 						<DashboardCard
@@ -58,7 +72,7 @@ const Dashboard = () => {
 								/>
 							}
 							title='Total Users'
-							value={200}
+							value={userStats.totalUsers}
 							description='Total number of users'
 							color='#508AFF'
 						/>
@@ -76,7 +90,7 @@ const Dashboard = () => {
 									}}
 								/>
 							}
-							value={20}
+							value={userStats.activeUsers}
 						/>
 					</Grid>
 					<Grid item xs={12} lg={6} xl={3}>
@@ -113,7 +127,18 @@ const Dashboard = () => {
 					</Grid>
 				</Grid>
 			</Box>
-			<Box sx={{ mt: '4rem' }}>
+
+			<Typography component='h2' variant='h6' sx={{ mt: '4rem' }}>
+				Bar Chart
+			</Typography>
+			<Box
+				sx={{
+					mt: '1rem',
+					backgroundColor: '#fff',
+					border: '0.92px solid #EFF0F6',
+					borderRadius: '10px'
+				}}
+			>
 				<BarChart
 					xAxis={barData.xAxis}
 					series={barData.series}
@@ -123,18 +148,23 @@ const Dashboard = () => {
 						width: '100%'
 					}}
 				/>
+			</Box>
 
-				<LineChart
-					xAxis={[{ data: lineXAxisData }]}
-					series={[{ data: lineSeriesData }]}
-					height={300}
-					sx={{
-						width: '100%'
-					}}
-				/>
+			<Typography component='h2' variant='h6' sx={{ mt: '4rem' }}>
+				Recent Files
+			</Typography>
+			<Box
+				sx={{
+					mt: '1rem',
+					backgroundColor: '#fff',
+					border: '0.92px solid #EFF0F6',
+					borderRadius: '10px'
+				}}
+			>
+				<RecentFiles />
 			</Box>
 		</PageLayout>
 	);
 };
 
-export default Dashboard;
+export default AdminDashboard;

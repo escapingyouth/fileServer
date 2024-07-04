@@ -220,6 +220,10 @@ exports.getFileStats = catchAsync(async (req, res, next) => {
     { $group: { _id: null, totalDownloads: { $sum: '$downloads' } } },
   ]);
 
+  const totalEmails = await File.aggregate([
+    { $group: { _id: null, totalEmails: { $sum: '$emailsSent' } } },
+  ]);
+
   const averageFileSize = await File.aggregate([
     { $group: { _id: null, averageSize: { $avg: '$size' } } },
   ]);
@@ -230,28 +234,14 @@ exports.getFileStats = catchAsync(async (req, res, next) => {
 
   const recentFiles = await File.find().sort({ uploadedAt: -1 });
 
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-  const uploadsOverTime = await File.aggregate([
-    { $match: { uploadedAt: { $gte: oneWeekAgo } } },
-    {
-      $group: {
-        _id: { $dayOfWeek: '$uploadedAt' },
-        count: { $sum: 1 },
-      },
-    },
-    { $sort: { _id: 1 } },
-  ]);
-
   const stats = {
     totalFiles,
     totalDownloads: totalDownloads[0]?.totalDownloads || 0,
+    totalEmails: totalEmails[0]?.totalEmails || 0,
     averageFileSize: averageFileSize[0]?.averageSize || 0,
     mostDownloadedFile,
     favoriteFilesCount,
     recentFiles,
-    uploadsOverTime,
   };
 
   res.status(200).json({

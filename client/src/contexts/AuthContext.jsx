@@ -176,7 +176,11 @@ export const AuthProvider = ({ children }) => {
 			setUser(data.data.user);
 			showSnackbar('User successfully updated!');
 
-			navigate('user/dashboard');
+			if (data.data.user.role === 'admin') {
+				navigate('admin/dashboard');
+			} else {
+				navigate('user/dashboard');
+			}
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
@@ -203,7 +207,11 @@ export const AuthProvider = ({ children }) => {
 			showSnackbar('Password successfully updated!');
 			setSubmitted(false);
 
-			navigate('user/dashboard');
+			if (data.data.user.role === 'admin') {
+				navigate('admin/dashboard');
+			} else {
+				navigate('user/dashboard');
+			}
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');

@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
-import { Typography, Paper, Box } from '@mui/material';
+import { useFile } from '../contexts/FileContext';
+import { Typography, Paper, Box, CircularProgress } from '@mui/material';
 
 const DashboardCard = ({ icon, title, value, description, color }) => {
+	const { loading } = useFile();
 	return (
 		<Paper
 			elevation={2}
@@ -31,7 +33,11 @@ const DashboardCard = ({ icon, title, value, description, color }) => {
 				</Typography>
 
 				<Typography variant='h6' sx={{ marginY: 1 }}>
-					{value}
+					{loading ? (
+						<CircularProgress size={25} sx={{ color: '#fff' }} disableShrink />
+					) : (
+						value
+					)}
 				</Typography>
 
 				<Typography variant='body2'>{description}</Typography>
