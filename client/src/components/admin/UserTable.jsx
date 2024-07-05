@@ -1,7 +1,5 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useSnackbar } from '../../contexts/SnackbarContext';
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
@@ -63,62 +61,14 @@ const columns = (handleEditUser, handleDeleteUser) => [
 ];
 
 export default function UserTable() {
-	const [users, setUsers] = useState([]);
-	const [loading, setIsLoading] = useState(false);
+	const { users, deleteUser, loading } = useAuth();
 	const navigate = useNavigate();
-	const { showSnackbar } = useSnackbar();
-
-	useEffect(() => {
-		async function fetchUsers() {
-			try {
-				setIsLoading(true);
-
-				const res = await axios.get(`${url}/api/users`, {
-					withCredentials: true
-				});
-				const users = res.data.data.users;
-				console.log(res);
-				console.log(users);
-
-				setUsers(
-					users.map((user) => ({
-						id: user._id,
-						name: user.name,
-						email: user.email,
-						photo: user.photo,
-						active: user.active
-					}))
-				);
-			} catch (error) {
-				console.log(error);
-				showSnackbar(`${error.message}. Try refreshing the page`, 'error');
-			} finally {
-				setIsLoading(false);
-			}
-		}
-		fetchUsers();
-	}, []);
 
 	const handleEditUser = async (userId) => {
 		navigate(`/admin/edit/user/${userId}`);
 	};
 	const handleDeleteUser = async (userId) => {
-		try {
-			axios
-				.delete(`${url}/api/users/${userId}`, {
-					withCredentials: true
-				})
-				.then(() => {
-					showSnackbar('User deleted!', 'warning');
-					setUsers(users.filter((user) => user.id !== userId));
-				})
-				.catch((error) => {
-					showSnackbar(error.message, 'error');
-				});
-		} catch (error) {
-			console.log(error);
-			showSnackbar(error.message, 'error');
-		}
+		await deleteUser(userId);
 	};
 
 	return (

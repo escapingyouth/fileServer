@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useSearch } from '../contexts/SearchContext';
 import PropTypes from 'prop-types';
 import { styled, alpha } from '@mui/material/styles';
 import {
@@ -87,6 +88,7 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 	const { user, logout } = useAuth();
 	const navigate = useNavigate();
+	const { searchTerm, setSearchTerm } = useSearch();
 
 	const isUserMenuOpen = Boolean(anchorElUser);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -248,8 +250,10 @@ export default function TopMenu({ onHandleDrawerToggle }) {
 							<SearchIcon />
 						</SearchIconWrapper>
 						<StyledInputBase
-							placeholder='Search…'
 							inputProps={{ 'aria-label': 'search' }}
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							placeholder='Search by file name'
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />

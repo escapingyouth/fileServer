@@ -7,6 +7,7 @@ import theme from './utils/theme.js';
 import { SnackbarProvider } from './contexts/SnackbarContext.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import { FileProvider } from './contexts/FileContext.jsx';
+import { SearchProvider } from './contexts/SearchContext.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 				<SnackbarProvider>
 					<AuthProvider>
 						<FileProvider>
-							<App />
+							<SearchProvider>
+								<App />
+							</SearchProvider>
 						</FileProvider>
 					</AuthProvider>
 				</SnackbarProvider>

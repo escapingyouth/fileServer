@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useParams } from 'react-router-dom';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import axios from 'axios';
 import PageLayout from '../../components/layouts/PageLayout';
@@ -8,26 +9,21 @@ import { Typography, TextField, Button, CircularProgress } from '@mui/material';
 const url = import.meta.env.VITE_SERVER_URL;
 
 export default function EditUser() {
-	const { id } = useParams();
-	const navigate = useNavigate();
-	const { showSnackbar } = useSnackbar();
-
 	const [user, setUser] = useState({ name: '', email: '' });
-	const [loading, setIsLoading] = useState(false);
-
-	const [submitted, setSubmitted] = useState(false);
+	const { id } = useParams();
+	const { showSnackbar } = useSnackbar();
+	const { updateUser, loading, submitted, setSubmitted } = useAuth();
 
 	useEffect(() => {
 		async function fetchUser() {
 			try {
-				const response = await axios.get(`${url}/api/users/${id}`, {
+				const { data } = await axios.get(`${url}/api/users/${id}`, {
 					withCredentials: true
 				});
-				console.log(response);
-				setUser(response.data.data.user);
+				setUser(data.data.user);
 			} catch (error) {
 				console.error(error);
-				showSnackbar(error.message, 'error');
+				showSnackbar(error.response.data.message, 'error');
 			}
 		}
 		fetchUser();
@@ -46,22 +42,7 @@ export default function EditUser() {
 			showSnackbar('Please fill out all required fields.', 'error');
 			return;
 		}
-		try {
-			setIsLoading(true);
-
-			await axios.patch(`${url}/api/users/${id}`, user, {
-				withCredentials: true
-			});
-
-			showSnackbar('User edited successfully!', 'info');
-			setSubmitted(false);
-			navigate('/admin/users');
-		} catch (error) {
-			console.error(error);
-			showSnackbar(error.message, 'error');
-		} finally {
-			setIsLoading(false);
-		}
+		await updateUser(id, user);
 	};
 
 	return (

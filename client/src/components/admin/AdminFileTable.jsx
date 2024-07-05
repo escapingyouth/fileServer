@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { useSearch } from '../../contexts/SearchContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ImageIcon from '@mui/icons-material/Image';
@@ -97,7 +99,15 @@ const getFileIcon = (mimetype) => {
 export default function AdminFileTable() {
 	const { files, loading } = useFile();
 
-	const mappedFiles = files
+	const { searchTerm } = useSearch();
+
+	const filteredFiles = useMemo(() => {
+		return files.filter((file) =>
+			file.title.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}, [files, searchTerm]);
+
+	const mappedFiles = filteredFiles
 		.filter((file) => !file.isTrashed)
 		.map((file) => ({
 			id: file._id,

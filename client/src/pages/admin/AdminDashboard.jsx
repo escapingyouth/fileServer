@@ -14,9 +14,8 @@ const AdminDashboard = () => {
 	const { fileStats } = useFile();
 	const { userStats } = useAuth();
 
-	const averageSizeMB = `${(fileStats.averageFileSize / 1048576).toFixed(
-		2
-	)} MB`;
+	const averageSizeMB =
+		`${(fileStats.averageFileSize / 1048576).toFixed(2)} MB` || '';
 
 	const barData = {
 		xAxis: [

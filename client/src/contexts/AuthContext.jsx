@@ -10,12 +10,41 @@ const url = import.meta.env.VITE_SERVER_URL;
 
 export const AuthProvider = ({ children }) => {
 	const { showSnackbar } = useSnackbar();
+	const [users, setUsers] = useState([]);
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [submitted, setSubmitted] = useState(false);
 	const [userStats, setUserStats] = useState({});
 
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		async function fetchUsers() {
+			try {
+				setLoading(true);
+
+				const { data } = await axios.get(`${url}/api/users`, {
+					withCredentials: true
+				});
+				const users = data.data.users;
+
+				setUsers(
+					users.map((user) => ({
+						id: user._id,
+						name: user.name,
+						email: user.email,
+						photo: user.photo,
+						active: user.active
+					}))
+				);
+			} catch (error) {
+				console.log(error);
+			} finally {
+				setLoading(false);
+			}
+		}
+		fetchUsers();
+	}, []);
 
 	useEffect(() => {
 		const checkAuth = async () => {
@@ -25,9 +54,11 @@ export const AuthProvider = ({ children }) => {
 				});
 				setUser(data.data.user);
 			} catch (error) {
+				console.log(error);
 				setUser(null);
+			} finally {
+				setLoading(false);
 			}
-			setLoading(false);
 		};
 		checkAuth();
 	}, []);
@@ -39,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 				const { data } = await axios.get(`${url}/api/users/stats`);
 				setUserStats(data.data.stats);
 			} catch (error) {
-				showSnackbar(error.response.data.message, 'error');
+				console.log(error);
 			} finally {
 				setLoading(false);
 			}
@@ -114,6 +145,7 @@ export const AuthProvider = ({ children }) => {
 			showSnackbar('Logged out!');
 			navigate('/auth/login');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		} finally {
 			setLoading(false);
@@ -188,6 +220,25 @@ export const AuthProvider = ({ children }) => {
 			setLoading(false);
 		}
 	};
+
+	const updateUser = async (userId, formData) => {
+		try {
+			setLoading(true);
+			await axios.patch(`${url}/api/users/${userId}`, formData, {
+				withCredentials: true
+			});
+			showSnackbar('User edited successfully!', 'info');
+			setSubmitted(false);
+
+			// navigate('admin/users');
+		} catch (error) {
+			console.log(error);
+			showSnackbar(error.response.data.message, 'error');
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const updateMyPassword = async (
 		passwordCurrent,
 		password,
@@ -229,6 +280,19 @@ export const AuthProvider = ({ children }) => {
 			showSnackbar('User account deleted!');
 			navigate('/');
 		} catch (error) {
+			console.log(error);
+			showSnackbar(error.response.data.message, 'error');
+		}
+	};
+	const deleteUser = async (userId) => {
+		try {
+			await axios.delete(`${url}/api/users/${userId}`, {
+				withCredentials: true
+			});
+			setUsers(users.filter((user) => user.id !== userId));
+			showSnackbar('User deleted!', 'warning');
+		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		}
 	};
@@ -237,14 +301,17 @@ export const AuthProvider = ({ children }) => {
 		<AuthContext.Provider
 			value={{
 				user,
+				users,
 				login,
 				signup,
 				forgotPassword,
 				resetPassword,
 				logout,
 				updateMe,
+				updateUser,
 				updateMyPassword,
 				deleteMe,
+				deleteUser,
 				userStats,
 				loading,
 				submitted,

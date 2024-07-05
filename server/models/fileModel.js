@@ -24,11 +24,6 @@ const fileSchema = new mongoose.Schema(
 
     originalname: String,
 
-    path: {
-      type: String,
-      unique: true,
-    },
-
     description: {
       type: String,
       required: [true, 'A file must have a description'],

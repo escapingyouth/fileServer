@@ -24,7 +24,7 @@ export const FileProvider = ({ children }) => {
 				const { data } = await axios.get(`${url}/api/files`);
 				setFiles(data.data.files);
 			} catch (error) {
-				showSnackbar(error.response.data.message, 'error');
+				console.log(error);
 			} finally {
 				setLoading(false);
 			}
@@ -40,7 +40,7 @@ export const FileProvider = ({ children }) => {
 
 				setFileStats(data.data.stats);
 			} catch (error) {
-				showSnackbar(error.response.data.message, 'error');
+				console.log(error);
 			} finally {
 				setLoading(false);
 			}
@@ -53,6 +53,7 @@ export const FileProvider = ({ children }) => {
 			const { data } = await axios.get(`${url}/api/files/${id}`);
 			return data.data.file;
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		}
 	};
@@ -70,6 +71,7 @@ export const FileProvider = ({ children }) => {
 			setSubmitted(false);
 			navigate('/admin/files');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		} finally {
 			setLoading(false);
@@ -85,6 +87,7 @@ export const FileProvider = ({ children }) => {
 			);
 			showSnackbar('File moved to trash successfully!', 'warning');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		}
 	};
@@ -101,6 +104,7 @@ export const FileProvider = ({ children }) => {
 			]);
 			showSnackbar('File restored!');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		}
 	};
@@ -111,6 +115,7 @@ export const FileProvider = ({ children }) => {
 			setFiles(files.filter((file) => file._id !== id));
 			showSnackbar('File deleted successfully!');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		}
 	};
@@ -136,6 +141,7 @@ export const FileProvider = ({ children }) => {
 			setSubmitted(false);
 			navigate('/admin/files');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		} finally {
 			setLoading(false);
@@ -152,6 +158,7 @@ export const FileProvider = ({ children }) => {
 			);
 			showSnackbar('Done!', 'info');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		}
 	};
@@ -162,6 +169,7 @@ export const FileProvider = ({ children }) => {
 			await axios.post(`${url}/api/files/email`, emailData);
 			showSnackbar('File emailed successfully!');
 		} catch (error) {
+			console.log(error);
 			showSnackbar(error.response.data.message, 'error');
 		} finally {
 			setLoading(false);
@@ -200,5 +208,5 @@ export function useFile() {
 }
 
 FileProvider.propTypes = {
-	children: PropTypes.node.isRequired
+	children: PropTypes.node
 };

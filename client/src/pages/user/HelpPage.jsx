@@ -51,7 +51,87 @@ export default function HelpPage() {
 						1. Dashboard
 					</Typography>
 
-					<Grid container spacing={{ xs: 2, md: 3 }}></Grid>
+					<Grid container spacing={{ xs: 6, xl: 12 }}>
+						<Grid item xl={6}>
+							<Typography
+								variant='h6'
+								component='h3'
+								gutterBottom
+								sx={{
+									fontWeight: 'semi-bold',
+									fontSize: {
+										xs: '1rem',
+										md: '1.2rem'
+									}
+								}}
+							>
+								File Statistics
+							</Typography>
+							<Typography
+								variant='body1'
+								component='p'
+								gutterBottom
+								sx={{
+									height: '72px'
+								}}
+							>
+								The dashboard consists of the file stats portion where users can
+								see various statistics on the files stored on the server. The
+								statistics include the total number of files, the total
+								downloads, the favorite count and the number of emails sent
+							</Typography>
+							<Box
+								sx={{
+									backgroundImage: 'url(/images/help/dashboard-1.PNG)',
+									backgroundRepeat: 'no-repeat',
+									backgroundSize: 'contain',
+									backgroundPosition: 'center',
+									height: '250px',
+									mt: '1.5rem'
+								}}
+							/>
+						</Grid>
+						<Grid item xl={6}>
+							<Typography
+								variant='h6'
+								component='h3'
+								gutterBottom
+								sx={{
+									fontWeight: 'semi-bold',
+									fontSize: {
+										xs: '1rem',
+										md: '1.2rem'
+									}
+								}}
+							>
+								Other features
+							</Typography>
+							<Typography
+								variant='body1'
+								component='p'
+								gutterBottom
+								sx={{
+									height: '72px'
+								}}
+							>
+								The dashboard offers visualization in terms of a bar chart of
+								the data found in the file stats above. Another feature inlcudes
+								the recent files table which gives the user all the files
+								uploaded in the server from most recently to least recently
+								uploaded
+							</Typography>
+							<Box
+								sx={{
+									backgroundImage: 'url(/images/help/dashboard-2.PNG)',
+									backgroundRepeat: 'no-repeat',
+									backgroundSize: 'contain',
+									backgroundPosition: 'center',
+									height: '250px',
+									mt: '1.5rem'
+								}}
+							/>
+						</Grid>
+					</Grid>
 				</Box>
 				<Box sx={{ mt: '6rem' }}>
 					<Typography

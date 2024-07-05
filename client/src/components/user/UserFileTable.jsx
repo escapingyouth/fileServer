@@ -1,5 +1,7 @@
-import { useFile } from '../../contexts/FileContext';
 import axios from 'axios';
+import { useMemo } from 'react';
+import { useFile } from '../../contexts/FileContext';
+import { useSearch } from '../../contexts/SearchContext';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 import { DataGrid } from '@mui/x-data-grid';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -8,7 +10,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FavoriteStar from './FavoriteStar';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Box, Link } from '@mui/material';
+import { Box } from '@mui/material';
 
 const url = import.meta.env.VITE_SERVER_URL;
 
@@ -56,17 +58,14 @@ const columns = (handleDownload) => [
 		headerName: 'Download',
 		width: 100,
 		renderCell: (params) => (
-			<Link href={`${url}/api/files/download/${params.row.id}`} target='_blank'>
-				Download
-			</Link>
+			<DownloadIcon
+				color='info'
+				style={{ cursor: 'pointer' }}
+				onClick={async () =>
+					await handleDownload(params.row.id, params.row.originalname)
+				}
+			/>
 		)
-		// <DownloadIcon
-		// 	color='info'
-		// 	style={{ cursor: 'pointer' }}
-		// 	onClick={async () =>
-		// 		await handleDownload(params.row.id, params.row.originalname)
-		// 	}
-		// />
 	}
 ];
 
@@ -108,8 +107,15 @@ const getFileIcon = (mimetype) => {
 export default function UserFileTable() {
 	const { files, loading } = useFile();
 	const { showSnackbar } = useSnackbar();
+	const { searchTerm } = useSearch();
 
-	const mappedFiles = files
+	const filteredFiles = useMemo(() => {
+		return files.filter((file) =>
+			file.title.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}, [files, searchTerm]);
+
+	const mappedFiles = filteredFiles
 		.filter((file) => !file.isTrashed)
 		.map((file) => ({
 			id: file._id,

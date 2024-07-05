@@ -76,7 +76,6 @@ exports.uploadFile = catchAsync(async (req, res, next) => {
     title,
     filename: req.file.filename,
     originalname: req.file.originalname,
-    path: req.file.path,
     description,
     size: req.file.size,
     mimetype: req.file.mimetype,
@@ -95,7 +94,7 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  const filePath = `https://fileserver.up.railway.app/uploads/${file.filename}`;
+  const filePath = `${process.env.SERVER_URL}/uploads/${file.filename}`;
 
   if (!filePath) {
     return next(new AppError('File does not exist on the server', 404));
@@ -128,7 +127,7 @@ exports.emailFile = catchAsync(async (req, res, next) => {
   if (!file) return next(new AppError('File not found', 404));
 
   try {
-    const url = `https://fileserver.up.railway.app/uploads/${file.filename}`;
+    const url = `${process.env.SERVER_URL}/uploads/${file.filename}`;
 
     const options = {
       message,
