@@ -5,8 +5,6 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import { Box, Tooltip, IconButton, Avatar } from '@mui/material';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
 const columns = (handleEditUser, handleDeleteUser) => [
 	{
 		field: 'name',
@@ -25,7 +23,7 @@ const columns = (handleEditUser, handleDeleteUser) => [
 		renderCell: (params) => (
 			<Avatar
 				alt={params.row.name}
-				src={`${url}/img/users/${params.row.photo}`}
+				src={params.row.photo}
 				sx={{
 					width: 35,
 					height: 35

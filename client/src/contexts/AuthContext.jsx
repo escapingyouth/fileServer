@@ -230,7 +230,7 @@ export const AuthProvider = ({ children }) => {
 			showSnackbar('User edited successfully!', 'info');
 			setSubmitted(false);
 
-			// navigate('admin/users');
+			navigate('admin/users');
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');

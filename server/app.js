@@ -41,6 +41,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://file-server-client.vercel.app',
+  'https://myfileserverappbucket.s3.af-south-1.amazonaws.com',
 ];
 
 const corsOptions = {
