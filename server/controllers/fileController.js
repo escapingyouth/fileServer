@@ -11,6 +11,7 @@ const s3 = require('../utils/awsConfig');
 
 const multerStorageS3 = multerS3({
   s3: s3,
+  acl: 'public-read',
   bucket: process.env.AWS_BUCKET_NAME,
   contentType: multerS3.AUTO_CONTENT_TYPE,
   key: (req, file, cb) => {
@@ -97,12 +98,6 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('No file found with that ID', 404));
   }
 
-  const filePath = `${process.env.SERVER_URL}/uploads/${file.filename}`;
-
-  if (!filePath) {
-    return next(new AppError('File does not exist on the server', 404));
-  }
-
   file.downloads += 1;
   await file.save();
 
@@ -123,7 +118,7 @@ exports.emailFile = catchAsync(async (req, res, next) => {
   if (!file) return next(new AppError('File not found', 404));
 
   try {
-    const url = `${process.env.SERVER_URL}/uploads/${file.filename}`;
+    const url = file.location;
 
     const options = {
       message,

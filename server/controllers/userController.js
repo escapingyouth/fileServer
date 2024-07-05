@@ -9,6 +9,7 @@ const s3 = require('../utils/awsConfig');
 
 const multerStorageS3 = multerS3({
   s3: s3,
+  acl: 'public-read',
   bucket: process.env.AWS_BUCKET_NAME,
   contentType: multerS3.AUTO_CONTENT_TYPE,
   key: (req, file, cb) => {
@@ -27,7 +28,7 @@ const multerFilter = (req, file, cb) => {
 
 const upload = multer({
   storage: multerStorageS3,
-  limits: { fileSize: 2 * 1024 * 1024 },
+  limits: { fileSize: 1 * 1024 * 1024 },
   fileFilter: multerFilter,
 });
 

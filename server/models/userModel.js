@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
-      default: 'default.jpg',
+      default:
+        'https://myfileserverappbucket.s3.af-south-1.amazonaws.com/user-photos/default.jpg',
     },
     role: {
       type: String,
