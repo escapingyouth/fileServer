@@ -13,12 +13,12 @@ const columns = [
 	{
 		field: 'filename',
 		headerName: 'File name',
-		width: 250
+		width: 300
 	},
 	{
 		field: 'description',
 		headerName: 'Description',
-		width: 300
+		width: 400
 	},
 	{
 		field: 'dateModified',

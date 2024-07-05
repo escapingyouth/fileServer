@@ -18,7 +18,7 @@ const columns = (handleDownload) => [
 	{
 		field: 'filename',
 		headerName: 'File name',
-		width: 150
+		width: 300
 	},
 	{
 		field: 'description',

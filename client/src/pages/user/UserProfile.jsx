@@ -16,8 +16,6 @@ import PageLayout from '../../components/layouts/PageLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSnackbar } from '../../contexts/SnackbarContext';
 
-const url = import.meta.env.VITE_SERVER_URL;
-
 export default function UserProfile() {
 	const { user, updateMe, loading } = useAuth();
 	const { showSnackbar } = useSnackbar();
@@ -103,7 +101,7 @@ export default function UserProfile() {
 										{user ? (
 											<Avatar
 												sx={{ width: 70, height: 70 }}
-												src={`${url}/img/users/${user.photo}`}
+												src={user.photo}
 												alt='Profile Picture'
 											/>
 										) : (

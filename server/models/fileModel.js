@@ -16,11 +16,7 @@ const fileSchema = new mongoose.Schema(
         'A file title must be less than or equal to 100 characters',
       ],
     },
-
-    filename: {
-      type: String,
-      unique: true,
-    },
+    location: String,
 
     originalname: String,
 

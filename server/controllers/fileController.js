@@ -2,21 +2,23 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
+const multerS3 = require('multer-s3');
 const File = require('../models/fileModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const Email = require('../utils/email');
+const s3 = require('../utils/awsConfig');
 
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads');
-  },
-  filename: (req, file, cb) => {
+const multerStorageS3 = multerS3({
+  s3: s3,
+  bucket: process.env.AWS_BUCKET_NAME,
+  contentType: multerS3.AUTO_CONTENT_TYPE,
+  key: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-
-    cb(null, `${file.fieldname}-${uuidv4()}${ext}`);
+    cb(null, `files/${file.fieldname}-${uuidv4()}${ext}`);
   },
 });
+
 const checkFileType = (file, cb) => {
   const fileExts = /jpeg|jpg|png|gif|webp|svg|ppt|pptx|xls|xlsx|pdf|doc|docx/;
   const mimeTypes =
@@ -32,15 +34,15 @@ const checkFileType = (file, cb) => {
   }
 };
 
-const upload = multer({
-  storage: multerStorage,
+const uploadS3 = multer({
+  storage: multerStorageS3,
   limits: { fileSize: 7 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     checkFileType(file, cb);
   },
 });
 
-exports.uploadFileMulter = upload.single('file');
+exports.uploadFileMulter = uploadS3.single('file');
 
 exports.getAllFiles = catchAsync(async (req, res, next) => {
   const files = await File.find();
@@ -70,13 +72,14 @@ exports.getFile = catchAsync(async (req, res, next) => {
 exports.uploadFile = catchAsync(async (req, res, next) => {
   if (!req.file) return next(new AppError('No file uploaded', 400));
 
+  console.log(req.file);
   const { title, description } = req.body;
 
   const newFile = await File.create({
     title,
-    filename: req.file.filename,
     originalname: req.file.originalname,
     description,
+    location: req.file.location,
     size: req.file.size,
     mimetype: req.file.mimetype,
   });
@@ -100,23 +103,16 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
     return next(new AppError('File does not exist on the server', 404));
   }
 
+  file.downloads += 1;
+  await file.save();
+
   res.set({
     'Content-Disposition': `attachment; filename="${file.originalname}"`,
-    'Content-Type': file.mimetype,
+    // 'Content-Type': file.mimetype,
+    'Content-Type': 'application/octet-stream',
   });
 
-  res.download(filePath, file.originalname, async (err) => {
-    if (err) {
-      return next(new AppError('Error downloading the file', 500));
-    }
-
-    try {
-      file.downloads += 1;
-      await file.save();
-    } catch (error) {
-      return next(new AppError('Error updating file download count', 500));
-    }
-  });
+  res.redirect(file.location);
 });
 
 exports.emailFile = catchAsync(async (req, res, next) => {
