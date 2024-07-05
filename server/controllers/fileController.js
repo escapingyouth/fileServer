@@ -103,7 +103,6 @@ exports.downloadFile = catchAsync(async (req, res, next) => {
 
   res.set({
     'Content-Disposition': `attachment; filename="${file.originalname}"`,
-    // 'Content-Type': file.mimetype,
     'Content-Type': 'application/octet-stream',
   });
 

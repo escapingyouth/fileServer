@@ -10,7 +10,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FavoriteStar from './FavoriteStar';
 import DownloadIcon from '@mui/icons-material/Download';
-import { Box, Link } from '@mui/material';
+import { Box } from '@mui/material';
 
 const url = import.meta.env.VITE_SERVER_URL;
 
@@ -145,7 +145,7 @@ export default function UserFileTable() {
 			showSnackbar('File successfully downloaded!');
 		} catch (error) {
 			console.log(error);
-			// console.error('Error downloading the file:', error);
+			showSnackbar('Error downloading file!', 'error');
 		}
 	};
 
