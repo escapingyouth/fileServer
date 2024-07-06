@@ -50,16 +50,6 @@ module.exports = class Email {
       subject,
       html,
       text: htmlToText.convert(html),
-      // attachments: this.options.file
-      //   ? [
-      //       {
-      //         filename: this.options.file.originalname,
-      //         contentType: this.options.file.mimetype,
-      //         path: this.options.file.path,
-      //         encoding: this.options.file.encoding,
-      //       },
-      //     ]
-      //   : [],
     };
 
     await this.newTransport().sendMail(mailOptions);
