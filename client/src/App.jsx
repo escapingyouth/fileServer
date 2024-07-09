@@ -17,7 +17,6 @@ import EditFile from './pages/admin/EditFile';
 import EditUser from './pages/admin/EditUser';
 import TrashPage from './pages/admin/Trash';
 
-import UserDashboard from './pages/user/UserDashboard';
 import UserAllFiles from './pages/user/UserAllFiles';
 import EmailFile from './pages/user/EmailFile';
 import FavoriteFiles from './pages/user/FavoriteFiles';
@@ -47,7 +46,6 @@ function App() {
 			</Route>
 
 			<Route path='/user/*'>
-				<Route path='dashboard' element={<UserDashboard />} />
 				<Route path='email' element={<EmailFile />} />
 				<Route path='files' element={<UserAllFiles />} />
 				<Route path='favorites' element={<FavoriteFiles />} />

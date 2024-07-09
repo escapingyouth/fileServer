@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
 			if (data.data.user.role === 'admin') {
 				navigate('admin/dashboard');
 			} else {
-				navigate('user/dashboard');
+				navigate('user/files');
 			}
 		} catch (error) {
 			console.log(error);
@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }) => {
 			if (data.data.user.role === 'admin') {
 				navigate('admin/dashboard');
 			} else {
-				navigate('user/dashboard');
+				navigate('user/files');
 			}
 		} catch (error) {
 			console.log(error);
@@ -211,7 +211,7 @@ export const AuthProvider = ({ children }) => {
 			if (data.data.user.role === 'admin') {
 				navigate('admin/dashboard');
 			} else {
-				navigate('user/dashboard');
+				navigate('user/files');
 			}
 		} catch (error) {
 			console.log(error);
@@ -261,7 +261,7 @@ export const AuthProvider = ({ children }) => {
 			if (data.data.user.role === 'admin') {
 				navigate('admin/dashboard');
 			} else {
-				navigate('user/dashboard');
+				navigate('user/files');
 			}
 		} catch (error) {
 			console.log(error);

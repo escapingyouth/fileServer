@@ -37,11 +37,6 @@ export const adminMenuItems = [
 
 export const userMenuItems = [
 	{
-		text: 'Dashboard',
-		icon: <DashboardIcon color='#fff' />,
-		path: '/user/dashboard'
-	},
-	{
 		text: 'All Files',
 		icon: <DescriptionIcon color='#fff' />,
 		path: '/user/files'
