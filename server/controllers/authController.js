@@ -97,8 +97,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   try {
-    // for api
-    // const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
     const resetUrl = `https://file-server-client.vercel.app/auth/reset-password/${resetToken}`;
 
     await new Email(user, resetUrl).sendPasswordReset();

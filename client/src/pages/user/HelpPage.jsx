@@ -70,7 +70,6 @@ export default function HelpPage() {
 							<Typography
 								variant='body1'
 								component='p'
-								gutterBottom
 								sx={{
 									height: '72px'
 								}}
@@ -87,7 +86,7 @@ export default function HelpPage() {
 									backgroundSize: 'contain',
 									backgroundPosition: 'center',
 									height: '250px',
-									mt: '1.5rem'
+									mt: '2rem'
 								}}
 							/>
 						</Grid>
@@ -127,7 +126,7 @@ export default function HelpPage() {
 									backgroundSize: 'contain',
 									backgroundPosition: 'center',
 									height: '250px',
-									mt: '1.5rem'
+									mt: '2rem'
 								}}
 							/>
 						</Grid>
