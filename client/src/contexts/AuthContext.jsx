@@ -112,21 +112,20 @@ export const AuthProvider = ({ children }) => {
 	const signup = async (name, email, password, passwordConfirm) => {
 		try {
 			setLoading(true);
-			const { data } = await axios.post(
+			await axios.post(
 				`${url}/api/users/signup`,
 				{ name, email, password, passwordConfirm },
 				{ withCredentials: true }
 			);
 
-			setUser(data.data.user);
-			showSnackbar('Sign up successful!');
+			showSnackbar('Sign up successful! Check email for verification link');
 			setSubmitted(false);
 
-			if (data.data.user.role === 'admin') {
-				navigate('admin/dashboard');
-			} else {
-				navigate('user/files');
-			}
+			// if (data.data.user.role === 'admin') {
+			// 	navigate('admin/dashboard');
+			// } else {
+			// 	navigate('user/files');
+			// }
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');

@@ -33,7 +33,7 @@ function App() {
 			<Route path='auth/signup' element={<Signup />} />
 			<Route path='auth/forgot-password' element={<ForgotPassword />} />
 			<Route path='auth/reset-password/:token' element={<ResetPassword />} />
-			<Route exact path='auth/verify/:token' component={VerifyEmail} />
+			<Route exact path='auth/verify/:token' element={<VerifyEmail />} />
 
 			<Route path='/admin/*'>
 				<Route path='dashboard' element={<AdminDashboard />} />

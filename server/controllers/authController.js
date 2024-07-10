@@ -62,6 +62,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
+    token: verificationToken,
     message: 'Verification email sent',
   });
 });
@@ -85,7 +86,7 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
   }
 
   user.isVerified = true;
-  await user.save();
+  await user.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: 'success',
