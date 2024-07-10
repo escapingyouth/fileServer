@@ -49,12 +49,6 @@ const userSchema = new mongoose.Schema(
     passwordResetToken: String,
     passwordResetExpires: Date,
 
-    active: {
-      type: Boolean,
-      default: true,
-      select: false,
-    },
-
     isVerified: {
       type: Boolean,
       default: false,
@@ -82,7 +76,7 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.find({ active: { $ne: false } });
+  this.find({ isVerified: { $ne: false } });
 
   next();
 });
