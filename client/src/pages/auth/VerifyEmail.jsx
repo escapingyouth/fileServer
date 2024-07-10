@@ -8,7 +8,6 @@ const url = import.meta.env.VITE_SERVER_URL;
 
 const VerifyEmail = () => {
 	const { token } = useParams();
-	console.log(token);
 	const navigate = useNavigate();
 	const [message, setMessage] = useState('');
 
