@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 						name: user.name,
 						email: user.email,
 						photo: user.photo,
-						active: user.active
+						isVerifed: user.isVerified
 					}))
 				);
 			} catch (error) {
@@ -120,12 +120,6 @@ export const AuthProvider = ({ children }) => {
 
 			showSnackbar('Sign up successful! Check email for verification link');
 			setSubmitted(false);
-
-			// if (data.data.user.role === 'admin') {
-			// 	navigate('admin/dashboard');
-			// } else {
-			// 	navigate('user/files');
-			// }
 		} catch (error) {
 			console.log(error);
 			showSnackbar(error.response.data.message, 'error');

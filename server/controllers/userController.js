@@ -133,11 +133,11 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 
 exports.getUserStats = catchAsync(async (req, res, next) => {
   const totalUsers = await User.countDocuments();
-  const activeUsers = await User.countDocuments({ active: true });
+  const verifiedUsers = await User.countDocuments({ isVerified: true });
 
   const stats = {
     totalUsers,
-    activeUsers,
+    verifiedUsers,
   };
 
   res.status(200).json({

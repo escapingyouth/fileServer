@@ -23,7 +23,7 @@ const AdminDashboard = () => {
 				id: 'categories',
 				data: [
 					'Total Users',
-					'Active Users',
+					'Verified Users',
 					'Total Files',
 					'Total Downloads',
 					'Average File Size'
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
 			{
 				data: [
 					userStats.totalUsers,
-					userStats.activeUsers,
+					userStats.verifiedUsers,
 					fileStats.totalFiles,
 					fileStats.totalDownloads,
 					(fileStats.averageFileSize / 1048576).toFixed(2)
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
 					<Grid item xs={12} lg={6} xl={3}>
 						<DashboardCard
 							color='#FFC966'
-							title='Total Active Users'
+							title='Total Verified Users'
 							description='Total number of active users'
 							icon={
 								<Face2Icon
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
 									}}
 								/>
 							}
-							value={userStats.activeUsers}
+							value={userStats.verifiedUsers}
 						/>
 					</Grid>
 					<Grid item xs={12} lg={6} xl={3}>
