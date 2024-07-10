@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Welcome from './pages/landing/Welcome';
 
 import Signup from './pages/auth/Signup';
+import VerifyEmail from './pages/auth/VerifyEmail';
 import Login from './pages/auth/Login';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
@@ -32,6 +33,7 @@ function App() {
 			<Route path='auth/signup' element={<Signup />} />
 			<Route path='auth/forgot-password' element={<ForgotPassword />} />
 			<Route path='auth/reset-password/:token' element={<ResetPassword />} />
+			<Route exact path='auth/verify/:token' component={VerifyEmail} />
 
 			<Route path='/admin/*'>
 				<Route path='dashboard' element={<AdminDashboard />} />

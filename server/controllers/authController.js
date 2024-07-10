@@ -50,15 +50,47 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     role: req.body.role,
   });
-  const url = `https://file-server-client.vercel.app/auth/login`;
+
+  const verificationToken = generateToken(newUser._id);
+  const verificationUrl = `https://file-server-client.vercel.app/auth/verify/${verificationToken}`;
 
   try {
-    await new Email(newUser, url).sendWelcome();
+    await new Email(newUser, verificationUrl).sendWelcome();
   } catch (err) {
     console.log(err);
   }
 
-  createSendToken(newUser, 201, res);
+  res.status(200).json({
+    status: 'success',
+    message: 'Verification email sent',
+  });
+});
+
+exports.verifyEmail = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+
+  const decoded = await util.promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET,
+  );
+  const user = await User.findById(decoded.id);
+
+  if (!user) {
+    return next(
+      new AppError(
+        'Invalid token or user belonging to this token does not exist',
+        401,
+      ),
+    );
+  }
+
+  user.isVerified = true;
+  await user.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Account verified successfully',
+  });
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -72,6 +104,10 @@ exports.login = catchAsync(async (req, res, next) => {
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password!', 401));
+  }
+
+  if (!user.isVerified) {
+    return next(new AppError('Your account has not been verified yet', 401));
   }
 
   createSendToken(user, 200, res);
