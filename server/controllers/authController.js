@@ -70,10 +70,8 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.verifyEmail = catchAsync(async (req, res, next) => {
   const { token } = req.params;
 
-  const decoded = await util.promisify(jwt.verify)(
-    token,
-    process.env.JWT_SECRET,
-  );
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
   const user = await User.findById(decoded.id);
 
   if (!user) {
